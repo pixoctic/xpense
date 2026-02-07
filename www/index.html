@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#000000"> <title>Xpense</title>
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Xpense Ultimate</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 rx=%22100%22 fill=%22%2309090b%22/><defs><linearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22><stop offset=%220%25%22 stop-color=%22%233b82f6%22/><stop offset=%22100%25%22 stop-color=%22%238b5cf6%22/></linearGradient></defs><g transform=%22translate(56, 56) scale(16)%22><path fill=%22url(%23g)%22 d=%22M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5%22/></g></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 rx=%220%22 fill=%22%23000000%22/><defs><linearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22><stop offset=%220%25%22 stop-color=%22%233b82f6%22/><stop offset=%22100%25%22 stop-color=%22%238b5cf6%22/></linearGradient></defs><g transform=%22translate(56, 56) scale(16)%22><path fill=%22url(%23g)%22 d=%22M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5%22/></g></svg>">
+
     <style>
         /* --- THEME --- */
         :root { 
@@ -40,23 +47,20 @@
         .num-btn:active { background: var(--primary); transform: scale(0.9); }
         .num-btn.disabled { opacity: 0.3; pointer-events: none; }
 
-        /* --- HEADER (SEAMLESS) --- */
+        /* --- HEADER --- */
         header { 
             padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; 
-            background: transparent; /* REMOVED BACKGROUND & BORDER */
+            background: transparent; 
         }
         .header-left { display: flex; flex-direction: column; }
-        
-        .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo-svg { width: 28px; height: 28px; fill: url(#grad1); filter: drop-shadow(0 0 5px rgba(59,130,246,0.5)); }
-        
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-svg { width: 28px; height: 28px; fill: url(#grad1); filter: drop-shadow(0 0 8px rgba(59,130,246,0.6)); }
         .logo-text { 
             font-size: 24px; font-weight: 900; letter-spacing: -0.5px; margin: 0; 
             background: linear-gradient(to right, #fff, #ccc); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .greeting-sub { font-size: 13px; color: var(--sub); margin-top: 4px; font-weight: 500; margin-left: 2px; }
-        
         .profile-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); overflow: hidden; background: #222; position: relative; }
         .profile-btn img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -147,9 +151,7 @@
     <header>
         <div class="header-left">
             <div class="logo-area">
-                <svg class="logo-svg" viewBox="0 0 24 24">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                </svg>
+                <svg class="logo-svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
                 <h1 class="logo-text">Xpense.</h1>
             </div>
             <div class="greeting-sub">
@@ -166,18 +168,14 @@
     <div class="dashboard">
         <div class="card">
             <div class="eye-icon" onclick="togglePrivacy()">👁️</div>
-            
             <div style="font-size:11px; color:var(--sub); text-transform:uppercase; letter-spacing:1px">Net Balance</div>
             <div class="bal-val"><span id="balance">₹0</span> <span class="edit-pen" onclick="editBalance()">✎</span></div>
-            
             <div class="budget-wrap">
                 <div class="budget-fill" id="budget-fill"></div>
                 <div class="budget-line" id="budget-line"></div>
                 <div class="budget-text">
                     <span id="spent-display" onclick="tab('stats', document.querySelectorAll('.nav-item')[1])">₹0 Spent</span>
-                    <span class="target-edit" onclick="editBudget(event)">
-                        <span id="budget-display">Target: ₹20k</span> ✎
-                    </span>
+                    <span class="target-edit" onclick="editBudget(event)"><span id="budget-display">Target: ₹20k</span> ✎</span>
                 </div>
             </div>
         </div>
@@ -211,25 +209,20 @@
                 <div class="type-opt" data-val="income" onclick="setType('income')">Income</div>
                 <div class="type-opt" data-val="lent" onclick="setType('lent')">Lent</div>
             </div>
-
             <input type="number" id="amt" class="input-box" placeholder="₹ Amount">
-            
             <div id="cat-wrapper">
                 <select id="cat" class="input-box" onchange="checkFields()"></select>
             </div>
-            
             <div id="lent-fields" style="display:none">
                 <input type="text" id="person" class="input-box" placeholder="Borrower Name (Required)">
                 <label style="color:var(--sub); font-size:12px; margin-left:5px">DUE DATE</label>
                 <input type="date" id="due-date" class="input-box" style="color-scheme:dark">
             </div>
-
             <div id="petrol-fields" style="display:none; background:rgba(59, 130, 246, 0.1); padding:15px; border-radius:14px; border:1px solid var(--primary); margin-bottom:10px">
                 <label style="font-size:12px; color:var(--primary); font-weight:bold; display:block; margin-bottom:10px">⛽ FUEL DETAILS</label>
                 <input type="number" id="p-price" class="input-box" placeholder="Price per Liter (₹)" value="105">
                 <input type="number" id="p-odo" class="input-box" placeholder="Current Odometer (km)">
             </div>
-
             <button class="action-btn" onclick="addTxn()">Save Transaction</button>
         </div>
 
@@ -258,10 +251,8 @@
             <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#666">📷</div>
         </div>
         <input type="file" id="file-in" accept="image/*" style="display:none" onchange="uploadImg()">
-        
         <label style="color:var(--sub); font-size:12px; display:block; text-align:left; margin:10px 0 5px 5%">YOUR NAME</label>
         <input type="text" id="user-name-in" class="input-box" placeholder="Name">
-        
         <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin:20px 0; text-align:left;">
             <label style="color:var(--primary); font-size:12px; font-weight:bold; display:block; margin-bottom:10px">🔔 DAILY REMINDER</label>
             <div style="display:flex; gap:10px">
@@ -269,7 +260,6 @@
                 <button class="action-btn" style="margin:0; width:auto; font-size:12px" onclick="setReminder()">Set</button>
             </div>
         </div>
-
         <button class="action-btn" onclick="saveProfile()">Save Settings</button>
         <button class="action-btn" style="background:#222; margin-top:20px; color:var(--danger)" onclick="if(confirm('Delete All Data?')) { localStorage.clear(); location.reload(); }">Reset App</button>
     </div>
@@ -279,15 +269,16 @@
         let inputPin = "";
         let failedAttempts = 0;
         let lockoutTimer = null;
-        let pressTimer; // For Long Press
+        let pressTimer;
         
         let txns = JSON.parse(localStorage.getItem('x_txns')) || [];
         let petrol = JSON.parse(localStorage.getItem('x_petrol')) || [];
         let user = JSON.parse(localStorage.getItem('x_user')) || { name: 'User', img: null, budget: 20000, notify: null };
+        let customCats = JSON.parse(localStorage.getItem('x_custom_cats')) || { expense: [], income: [] };
         let lastOdo = localStorage.getItem('x_odo') || 0;
         
-        const expenseCats = ['🍔 Food', '🛍️ Shopping', '🎬 Fun', '⛽ Petrol', '🚌 Travel', '🏠 Rent', '🏥 Health'];
-        const incomeCats = ['💰 Salary', '💵 Allowance', '🎁 Bonus', '🏦 Interest', '🪙 Other'];
+        const defaultExpenseCats = ['🍔 Food', '🛍️ Shopping', '🎬 Fun', '⛽ Petrol', '🚌 Travel', '🏠 Rent', '🏥 Health'];
+        const defaultIncomeCats = ['💰 Salary', '💵 Allowance', '🎁 Bonus', '🏦 Interest', '🪙 Other'];
         
         let displayDate = new Date();
         let currentType = 'expense';
@@ -299,54 +290,41 @@
             requestNotifyPerm();
         }
 
-        // --- LOCKOUT LOGIC ---
-        function checkLockout() {
-            const unlockTime = localStorage.getItem('lockout_until');
-            if(unlockTime && Date.now() < unlockTime) startLockout(Math.ceil((unlockTime - Date.now())/1000));
-        }
-        function startLockout(seconds) {
-            document.querySelectorAll('.num-btn').forEach(b => b.classList.add('disabled'));
-            let s = seconds;
-            document.getElementById('lock-msg').innerText = `Locked! Wait ${s}s`;
-            if(lockoutTimer) clearInterval(lockoutTimer);
-            lockoutTimer = setInterval(() => {
-                s--; document.getElementById('lock-msg').innerText = `Locked! Wait ${s}s`;
-                if(s <= 0) { clearInterval(lockoutTimer); document.getElementById('lock-msg').innerText = ""; document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('disabled')); localStorage.removeItem('lockout_until'); failedAttempts = 0; }
-            }, 1000);
-        }
-        function handlePin(n) {
-            if(localStorage.getItem('lockout_until') && Date.now() < localStorage.getItem('lockout_until')) return;
-            if(navigator.vibrate) navigator.vibrate(5);
-            if(n==='C') inputPin=""; else if(n==='<') inputPin=inputPin.slice(0,-1); else if(inputPin.length<6) inputPin+=n;
-            document.getElementById('pin-dots').innerText = "•".repeat(inputPin.length);
-            if(inputPin.length === 6) {
-                if(inputPin === PIN) { document.getElementById('lock-screen').style.display='none'; failedAttempts = 0; }
-                else { inputPin = ""; document.getElementById('pin-dots').innerText = ""; failedAttempts++; document.getElementById('lock-msg').innerText = `Wrong PIN (${failedAttempts}/3)`; if(failedAttempts >= 3) { localStorage.setItem('lockout_until', Date.now() + 30000); startLockout(30); } }
-            }
-        }
+        // --- LOCKOUT ---
+        function checkLockout() { const unlockTime = localStorage.getItem('lockout_until'); if(unlockTime && Date.now() < unlockTime) startLockout(Math.ceil((unlockTime - Date.now())/1000)); }
+        function startLockout(seconds) { document.querySelectorAll('.num-btn').forEach(b => b.classList.add('disabled')); let s = seconds; document.getElementById('lock-msg').innerText = `Locked! Wait ${s}s`; if(lockoutTimer) clearInterval(lockoutTimer); lockoutTimer = setInterval(() => { s--; document.getElementById('lock-msg').innerText = `Locked! Wait ${s}s`; if(s <= 0) { clearInterval(lockoutTimer); document.getElementById('lock-msg').innerText = ""; document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('disabled')); localStorage.removeItem('lockout_until'); failedAttempts = 0; } }, 1000); }
+        function handlePin(n) { if(localStorage.getItem('lockout_until') && Date.now() < localStorage.getItem('lockout_until')) return; if(navigator.vibrate) navigator.vibrate(5); if(n==='C') inputPin=""; else if(n==='<') inputPin=inputPin.slice(0,-1); else if(inputPin.length<6) inputPin+=n; document.getElementById('pin-dots').innerText = "•".repeat(inputPin.length); if(inputPin.length === 6) { if(inputPin === PIN) { document.getElementById('lock-screen').style.display='none'; failedAttempts = 0; } else { inputPin = ""; document.getElementById('pin-dots').innerText = ""; failedAttempts++; document.getElementById('lock-msg').innerText = `Wrong PIN (${failedAttempts}/3)`; if(failedAttempts >= 3) { localStorage.setItem('lockout_until', Date.now() + 30000); startLockout(30); } } } }
 
-        // --- CORE VIEW ---
-        function refreshView() {
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('month-label').innerText = `${monthNames[displayDate.getMonth()]} ${displayDate.getFullYear()}`;
-            const filteredTxns = txns.filter(t => { const d = new Date(t.date); return d.getMonth() === displayDate.getMonth() && d.getFullYear() === displayDate.getFullYear(); });
-            renderList(filteredTxns); renderStats(filteredTxns); updateBudget(filteredTxns); renderPetrolList(); updateBal(); updateGreeting();
-        }
+        // --- CORE ---
+        function refreshView() { const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; document.getElementById('month-label').innerText = `${monthNames[displayDate.getMonth()]} ${displayDate.getFullYear()}`; const filteredTxns = txns.filter(t => { const d = new Date(t.date); return d.getMonth() === displayDate.getMonth() && d.getFullYear() === displayDate.getFullYear(); }); renderList(filteredTxns); renderStats(filteredTxns); updateBudget(filteredTxns); renderPetrolList(); updateBal(); updateGreeting(); }
 
-        // --- ADD LOGIC ---
-        function setType(t) {
-            currentType = t;
-            document.querySelectorAll('.type-opt').forEach(el => el.classList.remove('active'));
-            document.querySelector(`.type-opt[data-val="${t}"]`).classList.add('active');
-            
-            document.getElementById('cat-wrapper').style.display = (t === 'lent') ? 'none' : 'block';
-            document.getElementById('lent-fields').style.display = (t === 'lent') ? 'block' : 'none';
-            renderCats(); checkFields();
-        }
+        // --- CATEGORIES ---
+        function setType(t) { currentType = t; document.querySelectorAll('.type-opt').forEach(el => el.classList.remove('active')); document.querySelector(`.type-opt[data-val="${t}"]`).classList.add('active'); document.getElementById('cat-wrapper').style.display = (t === 'lent') ? 'none' : 'block'; document.getElementById('lent-fields').style.display = (t === 'lent') ? 'block' : 'none'; renderCats(); checkFields(); }
         
         function renderCats() {
-            const cats = currentType === 'income' ? incomeCats : expenseCats;
-            document.getElementById('cat').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            const base = currentType === 'income' ? defaultIncomeCats : defaultExpenseCats;
+            const custom = customCats[currentType] || [];
+            const all = [...base, ...custom];
+            document.getElementById('cat').innerHTML = all.map(c => `<option value="${c}">${c}</option>`).join('') + `<option value="new_cat" style="font-weight:bold; color:var(--primary)">+ Create New...</option>`;
+        }
+
+        function checkFields() {
+            const catSelect = document.getElementById('cat');
+            if (catSelect.value === 'new_cat') {
+                const newName = prompt("New Category Name:");
+                if (newName) {
+                    const finalName = "🔹 " + newName;
+                    if (!customCats[currentType]) customCats[currentType] = [];
+                    customCats[currentType].push(finalName);
+                    localStorage.setItem('x_custom_cats', JSON.stringify(customCats));
+                    renderCats();
+                    catSelect.value = finalName;
+                } else {
+                    catSelect.value = catSelect.options[0].value;
+                }
+            }
+            const cat = catSelect.value;
+            document.getElementById('petrol-fields').style.display = (cat === '⛽ Petrol' && currentType === 'expense') ? 'block' : 'none';
         }
 
         function addTxn() {
@@ -354,83 +332,17 @@
             if(!amt) return;
             let txn = { id: Date.now(), amt, type: currentType, date: new Date().toLocaleDateString('en-US') };
             let note = "";
-
-            if(currentType === 'lent') {
-                const p = document.getElementById('person').value;
-                if(!p) return alert("Enter Name");
-                txn.cat = "Lent: " + p;
-                const due = document.getElementById('due-date').value;
-                if(due) txn.due = due;
-            } else {
-                txn.cat = document.getElementById('cat').value;
-                if(txn.cat === '⛽ Petrol' && currentType === 'expense') {
-                    const price = parseFloat(document.getElementById('p-price').value);
-                    const odo = parseFloat(document.getElementById('p-odo').value);
-                    if(price && odo) {
-                        const litres = (amt / price).toFixed(2);
-                        let mileage = 0;
-                        if(lastOdo > 0 && odo > lastOdo) mileage = ((odo - lastOdo) / litres).toFixed(1);
-                        lastOdo = odo; localStorage.setItem('x_odo', odo);
-                        petrol.unshift({ date: txn.date, amt, litres, mileage, odo });
-                        localStorage.setItem('x_petrol', JSON.stringify(petrol));
-                        note = `${litres}L @ ₹${price} (Mileage: ${mileage})`;
-                        alert(`Mileage: ${mileage} km/L`);
-                    }
-                }
-            }
-            if(note) txn.note = note;
-            txns.unshift(txn); localStorage.setItem('x_txns', JSON.stringify(txns));
-            document.getElementById('amt').value = ''; document.getElementById('person').value = '';
-            displayDate = new Date(); refreshView(); tab('home', document.querySelectorAll('.nav-item')[0]);
+            if(currentType === 'lent') { const p = document.getElementById('person').value; if(!p) return alert("Enter Name"); txn.cat = "Lent: " + p; const due = document.getElementById('due-date').value; if(due) txn.due = due; } 
+            else { txn.cat = document.getElementById('cat').value; if(txn.cat === '⛽ Petrol' && currentType === 'expense') { const price = parseFloat(document.getElementById('p-price').value); const odo = parseFloat(document.getElementById('p-odo').value); if(price && odo) { const litres = (amt / price).toFixed(2); let mileage = 0; if(lastOdo > 0 && odo > lastOdo) mileage = ((odo - lastOdo) / litres).toFixed(1); lastOdo = odo; localStorage.setItem('x_odo', odo); petrol.unshift({ date: txn.date, amt, litres, mileage, odo }); localStorage.setItem('x_petrol', JSON.stringify(petrol)); note = `${litres}L @ ₹${price} (Mileage: ${mileage})`; alert(`Mileage: ${mileage} km/L`); } } }
+            if(note) txn.note = note; txns.unshift(txn); localStorage.setItem('x_txns', JSON.stringify(txns)); document.getElementById('amt').value = ''; document.getElementById('person').value = ''; displayDate = new Date(); refreshView(); tab('home', document.querySelectorAll('.nav-item')[0]);
         }
 
-        // --- LIST & DELETE ---
-        function renderList(data) {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('txn-list').innerHTML = data.length ? data.map(t => {
-                let extra = "";
-                if(t.type === 'lent' && t.due) {
-                    if(t.due <= today) extra = `<span class="due-tag">⚠️ DUE</span>`;
-                    else extra = `<span style="font-size:10px; color:#666; margin-left:5px">Due: ${t.due}</span>`;
-                }
-                const amtStr = t.amt.toLocaleString('en-IN');
-                return `
-                <div class="txn" onmousedown="startPress(${t.id}, this)" ontouchstart="startPress(${t.id}, this)" onmouseup="cancelPress(this)" ontouchend="cancelPress(this)">
-                    <div><div style="font-weight:600">${t.cat} ${extra}</div><div style="font-size:12px; color:var(--sub)">${new Date(t.date).toLocaleDateString()} ${t.note?'• '+t.note:''}</div></div>
-                    <div class="${t.type==='income'?'inc':(t.type==='lent'?'lent':'exp')}">${t.type==='income'?'+':'-'}₹${amtStr}</div>
-                </div>`;
-            }).join('') : `<div style="text-align:center; padding:20px; color:var(--sub)">No transactions.</div>`;
-        }
-
-        function startPress(id, el) {
-            el.classList.add('deleting');
-            pressTimer = setTimeout(() => {
-                if(confirm("Delete this transaction?")) {
-                    txns = txns.filter(t => t.id !== id);
-                    localStorage.setItem('x_txns', JSON.stringify(txns));
-                    refreshView();
-                }
-                el.classList.remove('deleting');
-            }, 800);
-        }
+        // --- LIST & UTILS ---
+        function renderList(data) { const today = new Date().toISOString().split('T')[0]; document.getElementById('txn-list').innerHTML = data.length ? data.map(t => { let extra = ""; if(t.type === 'lent' && t.due) { if(t.due <= today) extra = `<span class="due-tag">⚠️ DUE</span>`; else extra = `<span style="font-size:10px; color:#666; margin-left:5px">Due: ${t.due}</span>`; } const amtStr = t.amt.toLocaleString('en-IN'); return `<div class="txn" onmousedown="startPress(${t.id}, this)" ontouchstart="startPress(${t.id}, this)" onmouseup="cancelPress(this)" ontouchend="cancelPress(this)"><div><div style="font-weight:600">${t.cat} ${extra}</div><div style="font-size:12px; color:var(--sub)">${new Date(t.date).toLocaleDateString()} ${t.note?'• '+t.note:''}</div></div><div class="${t.type==='income'?'inc':(t.type==='lent'?'lent':'exp')}">${t.type==='income'?'+':'-'}₹${amtStr}</div></div>`; }).join('') : `<div style="text-align:center; padding:20px; color:var(--sub)">No transactions.</div>`; }
+        function startPress(id, el) { el.classList.add('deleting'); pressTimer = setTimeout(() => { if(confirm("Delete this transaction?")) { txns = txns.filter(t => t.id !== id); localStorage.setItem('x_txns', JSON.stringify(txns)); refreshView(); } el.classList.remove('deleting'); }, 800); }
         function cancelPress(el) { clearTimeout(pressTimer); el.classList.remove('deleting'); }
-
-        // --- UTILS ---
-        function updateGreeting() {
-            const hr = new Date().getHours();
-            let greet = "Good Morning";
-            if(hr >= 12) greet = "Good Afternoon";
-            if(hr >= 17) greet = "Good Evening";
-            document.getElementById('greet-time').innerText = greet;
-            document.getElementById('user-display').innerText = user.name;
-        }
-
-        function togglePrivacy() {
-            privacyMode = !privacyMode;
-            document.getElementById('balance').classList.toggle('blur-mode', privacyMode);
-        }
-
-        function checkFields() { const cat = document.getElementById('cat').value; document.getElementById('petrol-fields').style.display = (cat === '⛽ Petrol' && currentType === 'expense') ? 'block' : 'none'; }
+        function updateGreeting() { const hr = new Date().getHours(); let greet = "Good Morning"; if(hr >= 12) greet = "Good Afternoon"; if(hr >= 17) greet = "Good Evening"; document.getElementById('greet-time').innerText = greet; document.getElementById('user-display').innerText = user.name; }
+        function togglePrivacy() { privacyMode = !privacyMode; document.getElementById('balance').classList.toggle('blur-mode', privacyMode); }
         function changeMonth(dir) { displayDate.setMonth(displayDate.getMonth() + dir); refreshView(); }
         function renderPetrolList() { document.getElementById('odo-display').innerText = `Odo: ${lastOdo} km`; const valid = petrol.filter(p => p.mileage > 0); if(valid.length) { const avg = (valid.reduce((a,b)=>a+parseFloat(b.mileage),0) / valid.length).toFixed(1); document.getElementById('avg-mileage').innerText = `${avg} km/L`; } document.getElementById('petrol-list').innerHTML = petrol.slice(0, 10).map(p => `<div class="txn"><div><div style="font-weight:600">${new Date(p.date).toLocaleDateString()}</div><div style="font-size:12px; color:var(--sub)">${p.litres}L • Odo: ${p.odo}</div></div><div style="text-align:right"><div style="font-weight:bold">₹${p.amt}</div><div style="font-size:12px; color:${p.mileage>35?'var(--success)':'var(--warn)'}">${p.mileage} km/L</div></div></div>`).join(''); }
         function renderStats(data) { const map = {}; let total = 0; data.filter(t => t.type === 'expense').forEach(t => { map[t.cat] = (map[t.cat] || 0) + t.amt; total += t.amt; }); let html = ""; for(let [c, amt] of Object.entries(map)) { let pct = total > 0 ? (amt / total * 100) : 0; html += `<div class="stat-item"><div class="stat-header"><span>${c}</span><span>₹${amt.toLocaleString('en-IN')} (${Math.round(pct)}%)</span></div><div class="stat-track"><div class="stat-fill" style="width:${pct}%"></div></div></div>`; } document.getElementById('stats-container').innerHTML = html; }
@@ -441,8 +353,6 @@
         function editBalance() { let cur = calculateBal(); let real = prompt(`Actual Bank Balance?`); if(real && !isNaN(real)) { let diff = parseFloat(real) - cur; if(diff !== 0) { txns.unshift({ id: Date.now(), amt: Math.abs(diff), type: diff>0?'income':'expense', cat: '⚙️ Correction', date: new Date().toLocaleDateString('en-US') }); localStorage.setItem('x_txns', JSON.stringify(txns)); refreshView(); } } }
         
         function renderNumpad() { const pad = document.getElementById('numpad'); [1,2,3,4,5,6,7,8,9,'C',0,'<'].forEach(n => { let b = document.createElement('div'); b.className = 'num-btn'; b.innerText = n==='<'?'⌫':n; b.onclick = () => handlePin(n); pad.appendChild(b); }); }
-        
-        // --- PROFILE & EXPORT ---
         function requestNotifyPerm() { if ("Notification" in window && Notification.permission !== "granted") Notification.requestPermission(); }
         function setReminder() { const time = document.getElementById('notify-time').value; if(time) { user.notify = time; localStorage.setItem('x_user', JSON.stringify(user)); alert(`Reminder set for ${time} daily!`); requestNotifyPerm(); } }
         function checkReminder() { if(!user.notify) return; const now = new Date(); const current = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'); const lastDate = localStorage.getItem('last_notify_date'); const today = now.toDateString(); if (current === user.notify && lastDate !== today && Notification.permission === "granted") { new Notification("Xpense Reminder", { body: "Don't forget to log your daily expenses!", icon: "https://via.placeholder.com/128" }); localStorage.setItem('last_notify_date', today); } }
