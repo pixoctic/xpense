@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xpense</title>
+    <style>
+        :root { --primary: #bb86fc; --bg: #121212; --surface: #1e1e1e; --text: #ffffff; --danger: #cf6679; --success: #03dac6; }
+        body { background-color: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
+        h1 { margin: 0 0 20px 0; font-size: 24px; text-align: center; color: var(--primary); }
+        .dashboard { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
+        .card { background: var(--surface); padding: 15px; border-radius: 12px; flex: 1; text-align: center; }
+        .card p { margin: 5px 0 0 0; font-size: 18px; font-weight: bold; }
+        .inc { color: var(--success); } .exp { color: var(--danger); }
+        .controls { background: var(--surface); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; }
+        input, select { padding: 12px; border-radius: 8px; border: 1px solid #333; background: #2c2c2c; color: white; font-size: 16px; }
+        button { padding: 15px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        h2 { font-size: 18px; margin-top: 25px; }
+        #history { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex-grow: 1; }
+        .transaction { background: var(--surface); padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid var(--primary); }
+        .transaction.expense { border-right-color: var(--danger); } .transaction.income { border-right-color: var(--success); }
+        .delete-btn { background: transparent; color: #555; border: none; font-size: 16px; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Xpense</h1>
+    <div class="dashboard">
+        <div class="card"><h3>Income</h3><p class="inc" id="money-plus">₹0.00</p></div>
+        <div class="card"><h3>Expense</h3><p class="exp" id="money-minus">₹0.00</p></div>
+        <div class="card"><h3>Balance</h3><p id="balance">₹0.00</p></div>
+    </div>
+    <div class="controls">
+        <input type="text" id="text" placeholder="Description">
+        <input type="number" id="amount" placeholder="Amount">
+        <select id="category">
+            <option value="Food">🍔 Food</option><option value="Travel">⛽ Travel</option>
+            <option value="Shopping">🛍️ Shopping</option><option value="Bills">🧾 Bills</option>
+            <option value="Salary">💰 Salary</option>
+        </select>
+        <button onclick="addTransaction()">Add Transaction</button>
+    </div>
+    <h2>History</h2><ul id="history"></ul>
+    <script>
+        const balanceEl = document.getElementById('balance');
+        const money_plus = document.getElementById('money-plus');
+        const money_minus = document.getElementById('money-minus');
+        const list = document.getElementById('history');
+        const text = document.getElementById('text');
+        const amount = document.getElementById('amount');
+        const category = document.getElementById('category');
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        function addTransaction() {
+            if(text.value.trim() === '' || amount.value.trim() === '') return alert('Please add details');
+            let amountValue = +amount.value;
+            if (category.value !== 'Salary') amountValue = -Math.abs(amountValue);
+            else amountValue = Math.abs(amountValue);
+            const transaction = { id: Math.floor(Math.random() * 100000000), text: text.value, amount: amountValue, category: category.value };
+            transactions.push(transaction); addTransactionDOM(transaction); updateValues(); updateLocalStorage();
+            text.value = ''; amount.value = '';
+        }
+        function addTransactionDOM(transaction) {
+            const sign = transaction.amount < 0 ? '-' : '+';
+            const item = document.createElement('li');
+            item.classList.add('transaction', transaction.amount < 0 ? 'expense' : 'income');
+            item.innerHTML = `<span>${transaction.text} <small>(${transaction.category})</small></span><span>${sign}₹${Math.abs(transaction.amount)}</span> <button class="delete-btn" onclick="removeTransaction(${transaction.id})">x</button>`;
+            list.appendChild(item);
+        }
+        function updateValues() {
+            const amounts = transactions.map(t => t.amount);
+            const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
+            const income = amounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
+            const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
+            balanceEl.innerText = `₹${total}`; money_plus.innerText = `+₹${income}`; money_minus.innerText = `-₹${expense}`;
+        }
+        function removeTransaction(id) { transactions = transactions.filter(t => t.id !== id); updateLocalStorage(); init(); }
+        function updateLocalStorage() { localStorage.setItem('transactions', JSON.stringify(transactions)); }
+        function init() { list.innerHTML = ''; transactions.forEach(addTransactionDOM); updateValues(); }
+        init();
+    </script>
+</body>
+</html>
