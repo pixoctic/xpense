@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Xpense Pro Final</title>
+    <title>Xpense Pro</title>
     <style>
         /* --- THEME --- */
         :root { 
@@ -41,14 +41,25 @@
         .num-btn.disabled { opacity: 0.3; pointer-events: none; }
 
         /* --- HEADER --- */
-        header { padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; }
-        .greeting-box h1 { font-size: 20px; font-weight: 700; margin: 0; background: linear-gradient(to right, #fff, #ccc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .greeting-box span { font-size: 12px; color: var(--sub); text-transform: uppercase; letter-spacing: 1px; }
-        .profile-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; background: #222; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        header { 
+            padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .header-left { display: flex; flex-direction: column; }
+        .logo-text { 
+            font-size: 26px; font-weight: 900; letter-spacing: -1px; margin: 0; 
+            background: linear-gradient(to right, var(--primary), var(--accent)); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .greeting-sub { font-size: 13px; color: var(--sub); margin-top: 2px; font-weight: 500; }
+        
+        .profile-btn { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; background: #222; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .profile-btn img { width: 100%; height: 100%; object-fit: cover; }
 
         /* --- DASHBOARD --- */
-        .dashboard { padding: 0 24px 20px; }
+        .dashboard { padding: 20px 24px; }
         .card { 
             background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 24px; padding: 25px; 
             text-align: center; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -125,9 +136,12 @@
     </div>
 
     <header>
-        <div class="greeting-box">
-            <span id="greet-time">Good Morning,</span>
-            <h1 id="user-display">User</h1>
+        <div class="header-left">
+            <h1 class="logo-text">Xpense.</h1>
+            <div class="greeting-sub">
+                <span id="greet-time">Good Morning</span> 
+                <span id="user-display" style="color:white; font-weight:600">User</span>
+            </div>
         </div>
         <div class="profile-btn" onclick="openProfile()">
             <img id="header-avatar" src="" style="display:none">
@@ -255,7 +269,7 @@
         
         let txns = JSON.parse(localStorage.getItem('x_txns')) || [];
         let petrol = JSON.parse(localStorage.getItem('x_petrol')) || [];
-        let user = JSON.parse(localStorage.getItem('x_user')) || { name: 'Kalidas', img: null, budget: 20000, notify: null };
+        let user = JSON.parse(localStorage.getItem('x_user')) || { name: 'User', img: null, budget: 20000, notify: null };
         let lastOdo = localStorage.getItem('x_odo') || 0;
         
         const expenseCats = ['🍔 Food', '🛍️ Shopping', '🎬 Fun', '⛽ Petrol', '🚌 Travel', '🏠 Rent', '🏥 Health'];
@@ -390,9 +404,9 @@
         // --- UTILS ---
         function updateGreeting() {
             const hr = new Date().getHours();
-            let greet = "Good Morning,";
-            if(hr >= 12) greet = "Good Afternoon,";
-            if(hr >= 17) greet = "Good Evening,";
+            let greet = "Good Morning";
+            if(hr >= 12) greet = "Good Afternoon";
+            if(hr >= 17) greet = "Good Evening";
             document.getElementById('greet-time').innerText = greet;
             document.getElementById('user-display').innerText = user.name;
         }
