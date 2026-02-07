@@ -1,5 +1,9 @@
 {
   "appId": "com.pixoctic.xpense",
   "appName": "xpense",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {
+    "url": "https://fantastic-kulfi-a8b435.netlify.app",
+    "cleartext": true
+  }
 }
