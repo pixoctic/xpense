@@ -346,6 +346,13 @@
 
         function updateBal() {
             const bal = txns.reduce((acc, t) => {
-                if(t.type === '
+                if(t.type === 'income') return acc + t.amt;
+                return acc - t.amt;
+            }, 0);
+            document.getElementById('balance').innerText = `₹${bal}`;
+        }
+
+        init();
+    </script>
 </body>
 </html>
