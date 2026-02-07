@@ -3,290 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Xpense Pro</title>
+    <title>Xpense Ultra</title>
     <style>
-        /* --- EXECUTIVE THEME --- */
+        /* --- TRENDY CYBER-GLASS THEME --- */
         :root { 
-            --bg: #09090b; --card: #18181b; --primary: #dc2626; --accent: #ef4444; 
-            --text: #fafafa; --sub: #a1a1aa; --success: #10b981; --warn: #f59e0b;
+            --bg: #000000;
+            --glass: rgba(20, 20, 20, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6; /* Electric Blue */
+            --accent: #8b5cf6;  /* Neon Purple */
+            --text: #ffffff;
+            --sub: #9ca3af;
+            --danger: #ef4444;
+            --success: #10b981;
         }
+        
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body { 
-            background-color: var(--bg); color: var(--text); 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            margin: 0; padding-top: max(45px, env(safe-area-inset-top)); padding-bottom: env(safe-area-inset-bottom);
-            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+            background: var(--bg);
+            background-image: radial-gradient(circle at 0% 0%, #1a1a2e 0%, #000 40%);
+            color: var(--text); 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            margin: 0; 
+            padding-top: max(45px, env(safe-area-inset-top)); 
+            padding-bottom: env(safe-area-inset-bottom);
+            height: 100vh; 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* --- GLASS COMPONENTS --- */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         /* --- OFFLINE SCREEN --- */
-        #offline-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .wifi-icon { font-size: 50px; margin-bottom: 20px; animation: pulse 2s infinite; }
+        #offline-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .wifi-icon { font-size: 60px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--primary)); }
 
-        /* --- COMPONENTS --- */
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .pin-dots { color: var(--primary); font-size: 32px; letter-spacing: 15px; margin-bottom: 40px; }
-        .num-btn { width: 70px; height: 70px; border-radius: 50%; border: 1px solid #333; background: #111; color: white; font-size: 24px; display: flex; align-items: center; justify-content: center; }
-        .num-btn:active { background: var(--primary); }
-
-        #app-content { display: none; height: 100%; flex-direction: column; }
-        header { padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
-        .avatar { width: 35px; height: 35px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-
-        /* DASHBOARD */
-        .dashboard { padding: 10px 24px; display: flex; flex-direction: column; align-items: center; }
-        .budget-ring { width: 180px; height: 180px; position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-        .ring-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-        .ring-bg { fill: none; stroke: #27272a; stroke-width: 12; }
-        .ring-progress { fill: none; stroke: var(--primary); stroke-width: 12; stroke-dasharray: 450; stroke-dashoffset: 450; transition: 1s ease-out; stroke-linecap: round; }
-        .ring-text { position: absolute; text-align: center; }
-        .ring-text h2 { margin: 0; font-size: 28px; font-weight: 700; display:flex; align-items:center; justify-content:center; gap:5px;}
-        .edit-icon { font-size: 14px; color: var(--sub); cursor: pointer; }
-
-        /* TABS */
-        .nav-bar { display: flex; background: var(--card); margin: 0 24px 10px; border-radius: 12px; padding: 4px; border: 1px solid #27272a; }
-        .nav-item { flex: 1; text-align: center; padding: 10px; font-size: 13px; color: var(--sub); border-radius: 8px; }
-        .nav-item.active { background: var(--bg); color: var(--text); font-weight: 600; }
-
-        /* VIEWS */
-        .view-section { flex: 1; overflow-y: auto; padding: 10px 24px 100px; display: none; }
-        .view-section.active { display: block; }
-
-        /* CARDS */
-        .petrol-card { background: linear-gradient(135deg, #1e1e24, #000); border: 1px solid #333; padding: 20px; border-radius: 16px; margin-bottom: 15px; position: relative; overflow: hidden; }
-        .petrol-card::before { content:'⛽'; position: absolute; right: -10px; bottom: -10px; font-size: 80px; opacity: 0.1; }
-        .big-stat { font-size: 32px; font-weight: bold; color: var(--warn); margin: 5px 0; }
+        /* --- HEADER --- */
+        header { padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .brand { font-size: 24px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #27272a; }
-        .txn-amt { font-weight: bold; }
-        .inc { color: var(--success); } .exp { color: var(--text); }
+        .profile-btn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; }
+        .profile-btn img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-placeholder { width: 100%; height: 100%; background: #222; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        /* INPUTS */
-        input, select { background: var(--card); border: 1px solid #333; padding: 16px; border-radius: 12px; color: white; width: 100%; margin-bottom: 10px; outline: none; }
-        button.btn { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 600; width: 100%; }
+        /* --- DASHBOARD --- */
+        .dashboard { padding: 0 24px; margin-bottom: 20px; }
+        .balance-card { text-align: center; padding: 25px; position: relative; overflow: hidden; }
+        .balance-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent); transform: rotate(45deg); animation: shine 6s infinite; }
+        
+        .bal-label { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--sub); margin-bottom: 5px; }
+        .bal-amount { font-size: 42px; font-weight: 700; letter-spacing: -1px; text-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
 
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        /* --- TABS --- */
+        .tab-bar { margin: 0 24px 15px; background: #111; border-radius: 15px; padding: 5px; display: flex; border: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 13px; color: var(--sub); border-radius: 12px; transition: 0.3s; font-weight: 500; }
+        .tab-btn.active { background: #222; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+        /* --- VIEWS --- */
+        .view { flex: 1; overflow-y: auto; padding: 0 24px 100px; display: none; scroll-behavior: smooth; }
+        .view.active { display: block; animation: fadeUp 0.4s ease; }
+
+        /* --- INPUTS --- */
+        .input-box { width: 100%; background: #111; border: 1px solid var(--border); color: #fff; padding: 18px; border-radius: 16px; font-size: 16px; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        .input-box:focus { border-color: var(--primary); background: #161616; }
+        
+        .action-btn { width: 100%; padding: 18px; border-radius: 16px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* --- LIST ITEMS --- */
+        .txn { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .txn-left h4 { margin: 0 0 4px; font-size: 15px; }
+        .txn-left span { font-size: 12px; color: var(--sub); }
+        .txn-right { font-weight: 700; font-size: 16px; }
+        .inc { color: var(--success); } .exp { color: var(--text); } .lent { color: #f59e0b; }
+
+        /* --- PROFILE UPLOAD --- */
+        .upload-area { width: 100px; height: 100px; border-radius: 50%; background: #222; margin: 0 auto 20px; position: relative; overflow: hidden; border: 2px dashed var(--sub); }
+        .upload-area img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; color: var(--sub); pointer-events: none; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shine { 0% { left: -50%; } 100% { left: 150%; } }
     </style>
 </head>
 <body>
 
     <div id="offline-screen">
         <div class="wifi-icon">📡</div>
-        <h2>Connection Lost</h2>
-        <p style="color:var(--sub)">Please connect to the internet to use Xpense Cloud.</p>
-        <button class="btn" onclick="window.location.reload()" style="width:200px; margin-top:20px;">Try Again</button>
+        <h2>No Connection</h2>
+        <p style="color:var(--sub); max-width: 250px; margin: 0 auto;">Xpense Cloud requires internet to sync.</p>
+        <button class="action-btn btn-primary" style="width:200px; margin-top:20px" onclick="location.reload()">Retry</button>
     </div>
 
-    <div id="lock-screen">
-        <div class="pin-dots" id="pin-dots">••••••</div>
-        <p style="color:#666; font-size:12px; letter-spacing:2px;">SECURE ENTRY</p>
-        <div id="numpad" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;"></div>
+    <header>
+        <div class="brand">Xpense.</div>
+        <div class="profile-btn" onclick="openProfile()">
+            <img id="header-avatar" src="" style="display:none">
+            <div id="header-placeholder" class="profile-placeholder">U</div>
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <div class="glass-card balance-card">
+            <div class="bal-label">Total Balance</div>
+            <div class="bal-amount" id="balance">₹0</div>
+        </div>
     </div>
 
-    <div id="app-content">
-        <header>
-            <div><h1 style="margin:0; font-size:20px;">Xpense.</h1></div>
-            <div class="avatar" onclick="switchTab('profile')">👤</div>
-        </header>
+    <div class="tab-bar">
+        <div class="tab-btn active" onclick="tab('home', this)">Activity</div>
+        <div class="tab-btn" onclick="tab('add', this)">+ New</div>
+        <div class="tab-btn" onclick="tab('petrol', this)">⛽ Petrol</div>
+    </div>
 
-        <div class="dashboard">
-            <div class="budget-ring">
-                <svg class="ring-svg"><circle class="ring-bg" cx="90" cy="90" r="70"></circle><circle class="ring-progress" id="ring-bar" cx="90" cy="90" r="70"></circle></svg>
-                <div class="ring-text">
-                    <span style="color:var(--sub); font-size:12px">Current Balance</span>
-                    <h2 id="balance">₹0 <span class="edit-icon" onclick="editBalance()">✎</span></h2>
-                </div>
-            </div>
-        </div>
+    <div id="view-home" class="view active">
+        <div id="txn-list"></div>
+    </div>
 
-        <div class="nav-bar">
-            <div class="nav-item active" onclick="switchTab('home', this)">Home</div>
-            <div class="nav-item" onclick="switchTab('add', this)">+ Add</div>
-            <div class="nav-item" onclick="switchTab('petrol', this)">⛽ Petrol</div>
-        </div>
-
-        <div id="view-home" class="view-section active">
-            <div id="txn-list"></div>
-        </div>
-
-        <div id="view-add" class="view-section">
-            <input type="number" id="amt" placeholder="₹ Amount">
-            <select id="type" onchange="toggleFields()">
+    <div id="view-add" class="view">
+        <div class="glass-card">
+            <h3 style="margin:0 0 15px; color:var(--sub); font-size:12px; text-transform:uppercase;">Transaction Details</h3>
+            <input type="number" id="amt" class="input-box" placeholder="₹ Amount">
+            <select id="type" class="input-box" onchange="toggleFields()">
                 <option value="expense">Expense</option>
                 <option value="income">Income</option>
                 <option value="lent">Lent Money</option>
             </select>
-            <select id="cat"></select>
-            <div id="extra-fields"></div>
-            <button class="btn" onclick="addTxn()">Confirm</button>
+            <select id="cat" class="input-box"></select>
+            
+            <div id="lent-fields" style="display:none">
+                <input type="text" id="person" class="input-box" placeholder="Borrower Name">
+            </div>
+
+            <button class="action-btn btn-primary" onclick="addTxn()">Save Transaction</button>
+        </div>
+    </div>
+
+    <div id="view-petrol" class="view">
+        <div class="glass-card" style="margin-bottom:20px; text-align:center;">
+            <div style="font-size:12px; color:var(--sub); text-transform:uppercase;">Average Mileage</div>
+            <div style="font-size:32px; font-weight:700; color:var(--success); margin:5px 0" id="avg-mileage">--</div>
+            <div style="font-size:12px; color:var(--sub);" id="odo-display">Odometer: 0 km</div>
         </div>
 
-        <div id="view-petrol" class="view-section">
-            <div class="petrol-card">
-                <span style="color:var(--sub); font-size:12px; text-transform:uppercase;">Average Mileage</span>
-                <div class="big-stat" id="avg-mileage">-- km/L</div>
-                <small style="color:var(--sub)" id="last-odo-display">Odometer: 0 km</small>
+        <div class="glass-card">
+            <h3 style="margin:0 0 15px; color:var(--sub); font-size:12px; text-transform:uppercase;">Refuel Log</h3>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="p-amt" class="input-box" placeholder="₹ Amount">
+                <input type="number" id="p-price" class="input-box" placeholder="₹ Price/L" value="105">
             </div>
-            
-            <h3 style="margin-top:20px; font-size:14px; color:var(--sub)">QUICK LOG</h3>
-            <input type="number" id="petrol-amt" placeholder="₹ Fuel Amount">
-            <input type="number" id="petrol-odo" placeholder="Current Odometer (km)">
-            <button class="btn" style="background:var(--warn); color:black;" onclick="addPetrol()">Log Fuel & Calculate</button>
+            <input type="number" id="p-odo" class="input-box" placeholder="Current Odometer (km)">
+            <button class="action-btn btn-primary" onclick="logPetrol()">Log Fuel</button>
+        </div>
+    </div>
 
-            <h3 style="margin-top:30px; font-size:14px; color:var(--sub)">FUEL HISTORY</h3>
-            <div id="petrol-list"></div>
+    <div id="view-profile" class="view" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:500; padding-top:60px;">
+        <div style="position:absolute; top:20px; right:20px; font-size:24px;" onclick="closeProfile()">&times;</div>
+        <div style="text-align:center;">
+            <div class="upload-area" onclick="document.getElementById('file-in').click()">
+                <img id="profile-preview" src="" style="display:none">
+                <div class="upload-icon" id="upload-icon">📷</div>
+            </div>
+            <input type="file" id="file-in" accept="image/*" style="display:none" onchange="uploadImg()">
+            
+            <input type="text" id="user-name-in" class="input-box" placeholder="Your Name" style="width:80%; text-align:center;">
+            <button class="action-btn btn-primary" style="width:80%" onclick="saveProfile()">Save Profile</button>
         </div>
     </div>
 
     <script>
-        const PIN = "121013";
-        let inputPin = "";
-        let txns = JSON.parse(localStorage.getItem('ex_txns')) || [];
-        let cats = ['🍔 Food', '🛍️ Shopping', '🎬 Fun', '🏠 Bills'];
-        let petrolLog = JSON.parse(localStorage.getItem('ex_petrol')) || [];
-        let lastOdo = localStorage.getItem('ex_odo') || 0;
+        // DATA STORE
+        let txns = JSON.parse(localStorage.getItem('u_txns')) || [];
+        let petrol = JSON.parse(localStorage.getItem('u_petrol')) || [];
+        let user = JSON.parse(localStorage.getItem('u_user')) || { name: 'User', img: null };
+        let lastOdo = localStorage.getItem('u_odo') || 0;
+        let cats = ['🍔 Food', '🛍️ Shopping', '🏠 Rent', '🎬 Fun', '🚌 Travel', '🏥 Health'];
 
-        // NETWORK CHECKER
-        window.addEventListener('offline', () => document.getElementById('offline-screen').style.display = 'flex');
-        window.addEventListener('online', () => document.getElementById('offline-screen').style.display = 'none');
-
-        // LOCK
-        const numpad = document.getElementById('numpad');
-        [1,2,3,4,5,6,7,8,9,'C',0,'<'].forEach(n => {
-            let btn = document.createElement('div');
-            btn.className = 'num-btn'; btn.innerText = n==='<'?'⌫':n;
-            btn.onclick = () => handlePin(n); numpad.appendChild(btn);
-        });
-        function handlePin(n) {
-            if(n==='C') inputPin=""; else if(n==='<') inputPin=inputPin.slice(0,-1); else if(inputPin.length<6) inputPin+=n;
-            document.getElementById('pin-dots').innerText = "•".repeat(inputPin.length);
-            if(inputPin === PIN) { document.getElementById('lock-screen').style.display='none'; document.getElementById('app-content').style.display='flex'; init(); }
-        }
-
+        // --- INIT ---
         function init() {
-            renderCats(); renderList(); updateStats(); renderPetrol();
+            // Network Listener
+            window.addEventListener('offline', () => document.getElementById('offline-screen').style.display = 'flex');
+            window.addEventListener('online', () => document.getElementById('offline-screen').style.display = 'none');
+            
+            loadProfile();
+            renderCats();
+            renderList();
+            updateBal();
+            renderPetrol();
         }
 
-        function switchTab(view, el) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-'+view).classList.add('active');
-            if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
+        // --- NAVIGATION ---
+        function tab(name, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-'+name).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
         }
 
+        // --- PROFILE LOGIC ---
+        function openProfile() { document.getElementById('view-profile').style.display = 'block'; }
+        function closeProfile() { document.getElementById('view-profile').style.display = 'none'; }
+        
+        function uploadImg() {
+            const file = document.getElementById('file-in').files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-preview').src = e.target.result;
+                    document.getElementById('profile-preview').style.display = 'block';
+                    document.getElementById('upload-icon').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('user-name-in').value;
+            const imgSrc = document.getElementById('profile-preview').src;
+            
+            if(name) user.name = name;
+            if(imgSrc && imgSrc.startsWith('data:')) user.img = imgSrc;
+            
+            localStorage.setItem('u_user', JSON.stringify(user));
+            loadProfile();
+            closeProfile();
+        }
+
+        function loadProfile() {
+            if(user.img) {
+                document.getElementById('header-avatar').src = user.img;
+                document.getElementById('header-avatar').style.display = 'block';
+                document.getElementById('header-placeholder').style.display = 'none';
+                
+                // Set preview too
+                document.getElementById('profile-preview').src = user.img;
+                document.getElementById('profile-preview').style.display = 'block';
+                document.getElementById('upload-icon').style.display = 'none';
+            }
+            document.getElementById('user-name-in').value = user.name;
+        }
+
+        // --- TRANSACTION LOGIC ---
         function renderCats() {
-            document.getElementById('cat').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            const sel = document.getElementById('cat');
+            sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
         function toggleFields() {
             const type = document.getElementById('type').value;
-            const box = document.getElementById('extra-fields');
-            box.innerHTML = type === 'lent' ? `<input type="text" id="person" placeholder="Name">` : '';
-        }
-
-        // --- CORE FEATURES ---
-
-        function editBalance() {
-            const currentBal = calculateBal();
-            const realBal = prompt(`Current App Balance: ₹${currentBal}\nEnter ACTUAL Balance in Bank:`);
-            if(realBal && !isNaN(realBal)) {
-                const diff = parseFloat(realBal) - currentBal;
-                if(diff !== 0) {
-                    const type = diff > 0 ? 'income' : 'expense';
-                    txns.unshift({ id: Date.now(), amt: Math.abs(diff), type, cat: '⚙️ Correction', date: new Date().toLocaleDateString() });
-                    save(); renderList(); updateStats();
-                }
-            }
+            document.getElementById('lent-fields').style.display = type === 'lent' ? 'block' : 'none';
         }
 
         function addTxn() {
             const amt = parseFloat(document.getElementById('amt').value);
             const type = document.getElementById('type').value;
             const cat = document.getElementById('cat').value;
-            if(!amt) return;
-
+            
+            if(!amt) return alert('Enter Amount');
+            
             let txn = { id: Date.now(), amt, type, cat, date: new Date().toLocaleDateString() };
             if(type === 'lent') {
-                txn.person = document.getElementById('person').value;
-                txn.cat = "💸 Lent";
+                txn.person = document.getElementById('person').value || 'Unknown';
+                txn.cat = 'Lent to ' + txn.person;
             }
 
-            txns.unshift(txn); save();
+            txns.unshift(txn);
+            localStorage.setItem('u_txns', JSON.stringify(txns));
+            
             document.getElementById('amt').value = '';
-            switchTab('home', document.querySelectorAll('.nav-item')[0]);
-            renderList(); updateStats();
+            renderList(); updateBal();
+            tab('home', document.querySelectorAll('.tab-btn')[0]);
         }
 
-        function addPetrol() {
-            const amt = parseFloat(document.getElementById('petrol-amt').value);
-            const odo = parseFloat(document.getElementById('petrol-odo').value);
-            if(!amt || !odo) return alert("Enter Amount and Odometer!");
+        // --- PETROL LOGIC FIXED ---
+        function logPetrol() {
+            const amt = parseFloat(document.getElementById('p-amt').value);
+            const price = parseFloat(document.getElementById('p-price').value);
+            const odo = parseFloat(document.getElementById('p-odo').value);
 
-            let dist = 0, mileage = 0;
+            if(!amt || !price || !odo) return alert('Fill all fields (Amount, Price, Odometer)');
+
+            const litres = (amt / price).toFixed(2);
+            let mileage = 0;
+
             if(lastOdo > 0 && odo > lastOdo) {
-                dist = odo - lastOdo;
-                const litres = amt / 105; // Approx price
+                const dist = odo - lastOdo;
                 mileage = (dist / litres).toFixed(1);
             }
 
             lastOdo = odo;
-            localStorage.setItem('ex_odo', odo);
+            localStorage.setItem('u_odo', odo);
+
+            // Log it
+            const log = { date: new Date().toLocaleDateString(), amt, litres, mileage, odo };
+            petrol.unshift(log);
+            localStorage.setItem('u_petrol', JSON.stringify(petrol));
+
+            // Also add to expenses
+            txns.unshift({ id: Date.now(), amt, type: 'expense', cat: '⛽ Petrol', note: `${litres}L @ ₹${price}` });
+            localStorage.setItem('u_txns', JSON.stringify(txns));
+
+            alert(`Logged! Mileage: ${mileage} km/L`);
+            renderPetrol(); renderList(); updateBal();
             
-            // Add to Main Log AND Petrol Log
-            txns.unshift({ id: Date.now(), amt, type: 'expense', cat: '⛽ Petrol', date: new Date().toLocaleDateString() });
-            petrolLog.unshift({ date: new Date().toLocaleDateString(), amt, odo, mileage });
-            localStorage.setItem('ex_petrol', JSON.stringify(petrolLog));
-            
-            save(); renderPetrol(); renderList(); updateStats();
-            document.getElementById('petrol-amt').value = '';
-            document.getElementById('petrol-odo').value = '';
-            alert(mileage > 0 ? `Mileage: ${mileage} km/L` : 'Fuel Logged! Mileage will update next time.');
+            document.getElementById('p-amt').value = '';
         }
 
         function renderPetrol() {
-            document.getElementById('last-odo-display').innerText = `Odometer: ${lastOdo} km`;
-            
-            // Calc Avg Mileage
-            const validLogs = petrolLog.filter(l => l.mileage > 0);
-            if(validLogs.length > 0) {
-                const avg = (validLogs.reduce((a,b) => a + parseFloat(b.mileage), 0) / validLogs.length).toFixed(1);
+            document.getElementById('odo-display').innerText = `Odometer: ${lastOdo} km`;
+            const valid = petrol.filter(p => p.mileage > 0);
+            if(valid.length) {
+                const avg = (valid.reduce((a,b)=>a+parseFloat(b.mileage),0) / valid.length).toFixed(1);
                 document.getElementById('avg-mileage').innerText = `${avg} km/L`;
             }
+        }
 
-            document.getElementById('petrol-list').innerHTML = petrolLog.slice(0,5).map(l => `
-                <div class="txn-item">
-                    <div><span style="color:var(--sub)">${l.date}</span></div>
-                    <div style="text-align:right">
-                        <div>₹${l.amt}</div>
-                        <small style="color:${l.mileage>40?'var(--success)':'var(--warn)'}">${l.mileage > 0 ? l.mileage+' km/L' : 'Refill'}</small>
+        // --- HELPERS ---
+        function renderList() {
+            const list = document.getElementById('txn-list');
+            list.innerHTML = txns.map(t => `
+                <div class="txn">
+                    <div class="txn-left">
+                        <h4>${t.cat}</h4>
+                        <span>${t.date} ${t.note ? '• '+t.note : ''}</span>
+                    </div>
+                    <div class="txn-right ${t.type==='income'?'inc':(t.type==='lent'?'lent':'exp')}">
+                        ${t.type==='income'?'+':'-'}₹${t.amt}
                     </div>
                 </div>
             `).join('');
         }
 
-        function calculateBal() {
-            const inc = txns.filter(t=>t.type==='income').reduce((a,b)=>a+b.amt,0);
-            const exp = txns.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amt,0);
-            const lent = txns.filter(t=>t.type==='lent').reduce((a,b)=>a+b.amt,0);
-            return inc - exp - lent;
+        function updateBal() {
+            const bal = txns.reduce((acc, t) => {
+                if(t.type === 'income') return acc + t.amt;
+                return acc - t.amt;
+            }, 0);
+            document.getElementById('balance').innerText = `₹${bal}`;
         }
-
-        function updateStats() {
-            const bal = calculateBal();
-            document.getElementById('balance').innerHTML = `₹${bal} <span class="edit-icon" onclick="editBalance()">✎</span>`;
-            
-            // Ring
-            const percent = Math.min((txns.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amt,0) / 20000) * 100, 100);
-            document.getElementById('ring-bar').style.strokeDashoffset = 450 - (450 * percent / 100);
-        }
-
-        function renderList() {
-            document.getElementById('txn-list').innerHTML = txns.map(t => `
-                <div class="txn-item">
-                    <div><h4>${t.person ? 'To: '+t.person : t.cat}</h4><span style="color:var(--sub);font-size:12px">${t.date}</span></div>
-                    <div class="txn-amt ${t.type==='income'?'inc':'exp'}">${t.type==='income'?'+':'-'}₹${t.amt}</div>
-                </div>`).join('');
-        }
-
-        function save() { localStorage.setItem('ex_txns', JSON.stringify(txns)); }
 
         init();
     </script>
