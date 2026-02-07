@@ -2,80 +2,296 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xpense</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Xpense Elite</title>
     <style>
-        :root { --primary: #bb86fc; --bg: #121212; --surface: #1e1e1e; --text: #ffffff; --danger: #cf6679; --success: #03dac6; }
-        body { background-color: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
-        h1 { margin: 0 0 20px 0; font-size: 24px; text-align: center; color: var(--primary); }
-        .dashboard { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
-        .card { background: var(--surface); padding: 15px; border-radius: 12px; flex: 1; text-align: center; }
-        .card p { margin: 5px 0 0 0; font-size: 18px; font-weight: bold; }
-        .inc { color: var(--success); } .exp { color: var(--danger); }
-        .controls { background: var(--surface); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; }
-        input, select { padding: 12px; border-radius: 8px; border: 1px solid #333; background: #2c2c2c; color: white; font-size: 16px; }
-        button { padding: 15px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        h2 { font-size: 18px; margin-top: 25px; }
-        #history { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex-grow: 1; }
-        .transaction { background: var(--surface); padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid var(--primary); }
-        .transaction.expense { border-right-color: var(--danger); } .transaction.income { border-right-color: var(--success); }
-        .delete-btn { background: transparent; color: #555; border: none; font-size: 16px; margin-left: 10px; }
+        /* --- PROFESSIONAL RED & BLACK THEME --- */
+        :root { 
+            --primary: #D32F2F;   /* Crimson Red */
+            --bg: #000000;        /* Pure Black */
+            --surface: #121212;   /* Dark Grey Surface */
+            --text: #ffffff;
+            --text-sub: #b0b0b0;
+            --border: #333333;
+        }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Helvetica Neue', 'Roboto', sans-serif; 
+            margin: 0; padding: 0; height: 100vh; 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* LOCK SCREEN */
+        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .pin-dots { color: var(--primary); font-size: 40px; letter-spacing: 15px; margin-bottom: 40px; }
+        .num-btn { width: 75px; height: 75px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: white; font-size: 24px; margin: 10px; }
+        .num-btn:active { background: var(--primary); }
+
+        /* APP HEADER */
+        header { padding: 20px 20px 0; display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 24px; font-weight: 300; letter-spacing: 1px; border-left: 4px solid var(--primary); padding-left: 15px; }
+        
+        /* DASHBOARD */
+        .dashboard { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { background: var(--surface); padding: 20px; border-radius: 4px; border-left: 1px solid var(--border); }
+        .card h3 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-sub); }
+        .card p { margin: 8px 0 0; font-size: 22px; font-weight: 500; }
+        .card.big { grid-column: span 2; background: linear-gradient(145deg, var(--surface), #1a0000); border: 1px solid #330000; }
+        .card.big p { font-size: 32px; color: var(--primary); }
+
+        /* INPUTS */
+        .controls { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid var(--border); }
+        input, select { background: var(--surface); border: 1px solid var(--border); color: white; padding: 15px; border-radius: 4px; font-size: 16px; width: 100%; outline: none; margin-bottom: 10px; }
+        button.action-btn { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 4px; font-weight: bold; width: 100%; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* HIDDEN BOXES */
+        .hidden { display: none; }
+        .mode-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px; border: 1px dashed var(--border); margin-bottom: 10px; }
+        .mode-box small { display: block; color: var(--text-sub); margin-bottom: 8px; font-size: 12px; text-transform: uppercase; }
+
+        /* TABS */
+        .tabs { display: flex; background: var(--surface); padding: 5px; margin: 20px; border-radius: 4px; }
+        .tab { flex: 1; text-align: center; padding: 10px; font-size: 12px; text-transform: uppercase; color: var(--text-sub); }
+        .tab.active { background: var(--primary); color: white; font-weight: bold; }
+
+        /* LIST & STATS */
+        #list { list-style: none; padding: 0 20px 100px; margin: 0; overflow-y: auto; height: 100%; }
+        .txn { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #222; }
+        .txn-info h4 { margin: 0; font-size: 16px; font-weight: 500; }
+        .txn-info span { font-size: 12px; color: var(--text-sub); text-transform: uppercase; }
+        
+        /* DUE DATE STYLING */
+        .due-tag { color: var(--primary); font-weight: bold; font-size: 10px; border: 1px solid var(--primary); padding: 2px 5px; border-radius: 4px; margin-left: 8px; }
+        .txn-amt { font-size: 18px; font-weight: bold; }
+        .inc { color: #4caf50; } .exp { color: #ff5252; } .lent { color: #ffb74d; }
+
+        /* STAT BARS */
+        .stat-bar { display: flex; align-items: center; margin-bottom: 10px; padding: 0 20px; }
+        .stat-label { width: 80px; font-size: 12px; color: #888; }
+        .stat-track { flex: 1; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
+        .stat-fill { height: 100%; background: var(--primary); }
+        .stat-val { width: 50px; text-align: right; font-size: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>Xpense</h1>
-    <div class="dashboard">
-        <div class="card"><h3>Income</h3><p class="inc" id="money-plus">₹0.00</p></div>
-        <div class="card"><h3>Expense</h3><p class="exp" id="money-minus">₹0.00</p></div>
-        <div class="card"><h3>Balance</h3><p id="balance">₹0.00</p></div>
+
+    <div id="lock-screen">
+        <div class="pin-dots" id="pin-dots">••••</div>
+        <p style="color:#666; font-size:12px; letter-spacing:2px; text-transform:uppercase;">Authentication Required</p>
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr);">
+            <button class="num-btn" onclick="pin(1)">1</button><button class="num-btn" onclick="pin(2)">2</button><button class="num-btn" onclick="pin(3)">3</button>
+            <button class="num-btn" onclick="pin(4)">4</button><button class="num-btn" onclick="pin(5)">5</button><button class="num-btn" onclick="pin(6)">6</button>
+            <button class="num-btn" onclick="pin(7)">7</button><button class="num-btn" onclick="pin(8)">8</button><button class="num-btn" onclick="pin(9)">9</button>
+            <button class="num-btn" style="color:var(--primary)" onclick="pin('C')">C</button><button class="num-btn" onclick="pin(0)">0</button><button class="num-btn" onclick="pin('<')">⌫</button>
+        </div>
     </div>
-    <div class="controls">
-        <input type="text" id="text" placeholder="Description">
-        <input type="number" id="amount" placeholder="Amount">
-        <select id="category">
-            <option value="Food">🍔 Food</option><option value="Travel">⛽ Travel</option>
-            <option value="Shopping">🛍️ Shopping</option><option value="Bills">🧾 Bills</option>
-            <option value="Salary">💰 Salary</option>
-        </select>
-        <button onclick="addTransaction()">Add Transaction</button>
+
+    <div id="app-content" style="display:none; flex-direction:column; height:100%;">
+        <header>
+            <h1>Xpense<span style="color:var(--primary)">.</span></h1>
+            <div style="font-size:12px; color:#666" id="date-display"></div>
+        </header>
+
+        <div class="dashboard">
+            <div class="card big"><h3>Net Balance</h3><p id="balance">₹0.00</p></div>
+            <div class="card"><h3>Monthly Spent</h3><p id="expense" style="color:#ff5252">₹0</p></div>
+            <div class="card"><h3>Money Lented</h3><p id="lent-total" style="color:#ffb74d">₹0</p></div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="setTab('list', this)">Transactions</div>
+            <div class="tab" onclick="setTab('stats', this)">Analytics</div>
+        </div>
+
+        <div class="controls" id="input-area">
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="amt" placeholder="₹ Amount">
+                <select id="type" onchange="toggleMode()">
+                    <option value="expense">Expense</option>
+                    <option value="income">Income</option>
+                    <option value="lent">Lent Money</option>
+                </select>
+            </div>
+            
+            <div style="display:flex; gap:10px;">
+                <select id="cat" onchange="checkMode()"></select>
+                <button onclick="newCat()" style="width:50px; background:var(--surface); border:1px solid var(--border); color:white;">+</button>
+            </div>
+
+            <div id="petrol-box" class="hidden mode-box">
+                <small>ODOMETER READING</small>
+                <input type="number" id="odo" placeholder="Current km">
+            </div>
+
+            <div id="lent-box" class="hidden mode-box">
+                <small>BORROWER DETAILS</small>
+                <input type="text" id="person" placeholder="Name">
+                <small>DUE DATE</small>
+                <input type="date" id="due-date" style="color-scheme:dark">
+            </div>
+
+            <button class="action-btn" onclick="addTxn()">Record Transaction</button>
+        </div>
+
+        <ul id="list"></ul>
+        <div id="stats-area" class="hidden"></div>
     </div>
-    <h2>History</h2><ul id="history"></ul>
+
     <script>
-        const balanceEl = document.getElementById('balance');
-        const money_plus = document.getElementById('money-plus');
-        const money_minus = document.getElementById('money-minus');
-        const list = document.getElementById('history');
-        const text = document.getElementById('text');
-        const amount = document.getElementById('amount');
-        const category = document.getElementById('category');
-        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-        function addTransaction() {
-            if(text.value.trim() === '' || amount.value.trim() === '') return alert('Please add details');
-            let amountValue = +amount.value;
-            if (category.value !== 'Salary') amountValue = -Math.abs(amountValue);
-            else amountValue = Math.abs(amountValue);
-            const transaction = { id: Math.floor(Math.random() * 100000000), text: text.value, amount: amountValue, category: category.value };
-            transactions.push(transaction); addTransactionDOM(transaction); updateValues(); updateLocalStorage();
-            text.value = ''; amount.value = '';
+        const PIN = "1234";
+        let inputPin = "";
+        let txns = JSON.parse(localStorage.getItem('x_txns')) || [];
+        let cats = JSON.parse(localStorage.getItem('x_cats')) || ['Food', 'Travel', 'Petrol', 'Shopping', 'Bills', 'EMI'];
+        let lastOdo = localStorage.getItem('x_odo') || 0;
+
+        // AUTH
+        function pin(n) {
+            if(n==='C') inputPin=""; else if(n==='<') inputPin=inputPin.slice(0,-1); else inputPin+=n;
+            document.getElementById('pin-dots').innerText = "•".repeat(inputPin.length) || "Enter PIN";
+            if(inputPin === PIN) {
+                document.getElementById('lock-screen').style.display='none';
+                document.getElementById('app-content').style.display='flex';
+                init();
+            }
         }
-        function addTransactionDOM(transaction) {
-            const sign = transaction.amount < 0 ? '-' : '+';
-            const item = document.createElement('li');
-            item.classList.add('transaction', transaction.amount < 0 ? 'expense' : 'income');
-            item.innerHTML = `<span>${transaction.text} <small>(${transaction.category})</small></span><span>${sign}₹${Math.abs(transaction.amount)}</span> <button class="delete-btn" onclick="removeTransaction(${transaction.id})">x</button>`;
-            list.appendChild(item);
+
+        function init() {
+            document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
+            renderCats(); renderList(); updateStats();
         }
-        function updateValues() {
-            const amounts = transactions.map(t => t.amount);
-            const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
-            const income = amounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
-            const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
-            balanceEl.innerText = `₹${total}`; money_plus.innerText = `+₹${income}`; money_minus.innerText = `-₹${expense}`;
+
+        function renderCats() {
+            document.getElementById('cat').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
         }
-        function removeTransaction(id) { transactions = transactions.filter(t => t.id !== id); updateLocalStorage(); init(); }
-        function updateLocalStorage() { localStorage.setItem('transactions', JSON.stringify(transactions)); }
-        function init() { list.innerHTML = ''; transactions.forEach(addTransactionDOM); updateValues(); }
-        init();
+
+        function toggleMode() {
+            const type = document.getElementById('type').value;
+            const cat = document.getElementById('cat').value;
+            document.getElementById('lent-box').classList.add('hidden');
+            document.getElementById('petrol-box').classList.add('hidden');
+            if(type === 'lent') document.getElementById('lent-box').classList.remove('hidden');
+            if(cat === 'Petrol' && type === 'expense') document.getElementById('petrol-box').classList.remove('hidden');
+        }
+        function checkMode() { toggleMode(); }
+
+        function addTxn() {
+            const amt = parseFloat(document.getElementById('amt').value);
+            const type = document.getElementById('type').value;
+            const cat = document.getElementById('cat').value;
+            if(!amt) return;
+
+            let txn = { id: Date.now(), amt, type, cat, date: new Date().toLocaleDateString() };
+
+            if(type === 'lent') {
+                const p = document.getElementById('person').value;
+                const d = document.getElementById('due-date').value; // YYYY-MM-DD
+                if(!p) return alert('Name required');
+                txn.person = p;
+                txn.due = d; 
+                txn.cat = 'Lent';
+            }
+
+            if(cat === 'Petrol') {
+                const odo = document.getElementById('odo').value;
+                if(odo && lastOdo > 0) {
+                    const dist = odo - lastOdo;
+                    const mileage = (dist / (amt/105)).toFixed(1);
+                    txn.note = `Mileage: ${mileage} km/L`;
+                    alert(`Mileage: ${mileage} km/L`);
+                }
+                if(odo) { lastOdo = odo; localStorage.setItem('x_odo', odo); }
+            }
+
+            txns.unshift(txn);
+            localStorage.setItem('x_txns', JSON.stringify(txns));
+            renderList(); updateStats();
+            document.getElementById('amt').value = '';
+        }
+
+        function renderList() {
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+            txns.forEach(t => {
+                let color = t.type==='income'?'inc':(t.type==='lent'?'lent':'exp');
+                let sign = t.type==='income'?'+':(t.type==='lent'?'':'-');
+                
+                // Due Date Logic
+                let dueHTML = '';
+                if(t.type === 'lent' && t.due) {
+                    if(t.due <= today) {
+                        dueHTML = `<span class="due-tag">⚠️ DUE</span>`;
+                    } else {
+                        dueHTML = `<span style="font-size:10px; color:#666; margin-left:5px">Due: ${t.due}</span>`;
+                    }
+                }
+
+                let sub = t.type==='lent' ? `To: ${t.person}` : t.cat;
+                if(t.note) sub += ` | ${t.note}`;
+
+                list.innerHTML += `
+                <li class="txn">
+                    <div class="txn-info">
+                        <h4>${sub} ${dueHTML}</h4>
+                        <span>${t.date}</span>
+                    </div>
+                    <div style="text-align:right">
+                        <span class="txn-amt ${color}">${sign}₹${t.amt}</span>
+                        <button onclick="del(${t.id})" style="display:block; width:100%; background:none; border:none; color:#444; text-align:right; margin-top:5px;">&times;</button>
+                    </div>
+                </li>`;
+            });
+        }
+
+        function updateStats() {
+            const inc = txns.filter(t=>t.type==='income').reduce((a,b)=>a+b.amt,0);
+            const exp = txns.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amt,0);
+            const lent = txns.filter(t=>t.type==='lent').reduce((a,b)=>a+b.amt,0);
+            
+            document.getElementById('balance').innerText = `₹${inc - exp - lent}`;
+            document.getElementById('expense').innerText = `₹${exp}`;
+            document.getElementById('lent-total').innerText = `₹${lent}`;
+
+            // Bar Chart
+            const stats = {};
+            txns.filter(t=>t.type==='expense').forEach(t => { stats[t.cat] = (stats[t.cat] || 0) + t.amt; });
+            const max = Math.max(...Object.values(stats), 1);
+            
+            document.getElementById('stats-area').innerHTML = Object.keys(stats).map(k => `
+                <div class="stat-bar">
+                    <span class="stat-label">${k}</span>
+                    <div class="stat-track"><div class="stat-fill" style="width:${(stats[k]/max)*100}%"></div></div>
+                    <span class="stat-val">₹${stats[k]}</span>
+                </div>
+            `).join('');
+        }
+
+        function setTab(mode, el) {
+            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+            el.classList.add('active');
+            if(mode === 'list') {
+                document.getElementById('list').classList.remove('hidden');
+                document.getElementById('input-area').classList.remove('hidden');
+                document.getElementById('stats-area').classList.add('hidden');
+            } else {
+                document.getElementById('list').classList.add('hidden');
+                document.getElementById('input-area').classList.add('hidden');
+                document.getElementById('stats-area').classList.remove('hidden');
+            }
+        }
+
+        function newCat() {
+            const n = prompt("New Category Name:");
+            if(n) { cats.push(n); localStorage.setItem('x_cats', JSON.stringify(cats)); renderCats(); }
+        }
+        
+        function del(id) {
+            if(confirm('Delete?')) { txns = txns.filter(t=>t.id!==id); localStorage.setItem('x_txns', JSON.stringify(txns)); renderList(); updateStats(); }
+        }
     </script>
 </body>
 </html>
