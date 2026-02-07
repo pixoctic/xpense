@@ -3,136 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Xpense Ultra</title>
+    <title>Xpense Pro Max</title>
     <style>
-        /* --- TRENDY CYBER-GLASS THEME --- */
+        /* --- PRO MAX THEME --- */
         :root { 
             --bg: #000000;
-            --glass: rgba(20, 20, 20, 0.7);
-            --border: rgba(255, 255, 255, 0.1);
-            --primary: #3b82f6; /* Electric Blue */
-            --accent: #8b5cf6;  /* Neon Purple */
-            --text: #ffffff;
-            --sub: #9ca3af;
-            --danger: #ef4444;
-            --success: #10b981;
+            --glass: rgba(22, 22, 24, 0.8);
+            --glass-nav: rgba(10, 10, 10, 0.95);
+            --border: rgba(255, 255, 255, 0.12);
+            --primary: #3b82f6; --accent: #8b5cf6;
+            --text: #ffffff; --sub: #9ca3af;
+            --danger: #ef4444; --success: #10b981; --warn: #f59e0b;
         }
-        
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { 
             background: var(--bg);
-            background-image: radial-gradient(circle at 0% 0%, #1a1a2e 0%, #000 40%);
-            color: var(--text); 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            margin: 0; 
-            padding-top: max(45px, env(safe-area-inset-top)); 
-            padding-bottom: env(safe-area-inset-bottom);
-            height: 100vh; 
-            display: flex; flex-direction: column; overflow: hidden;
+            color: var(--text); font-family: 'Inter', -apple-system, sans-serif; 
+            margin: 0; padding-top: max(45px, env(safe-area-inset-top)); 
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* --- GLASS COMPONENTS --- */
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        }
+        /* --- FX --- */
+        .aura { position: fixed; width: 300px; height: 300px; filter: blur(90px); opacity: 0.25; z-index: -1; animation: float 10s infinite alternate; }
+        .aura.blue { top: -50px; left: -50px; background: var(--primary); }
+        .aura.purple { bottom: -50px; right: -50px; background: var(--accent); animation-delay: -5s; }
+        @keyframes float { 0% { transform: translate(0,0); } 100% { transform: translate(40px, 40px); } }
 
-        /* --- OFFLINE SCREEN --- */
-        #offline-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .wifi-icon { font-size: 60px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--primary)); }
+        /* --- LOCK SCREEN --- */
+        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .pin-dots { color: var(--primary); font-size: 30px; letter-spacing: 12px; margin-bottom: 40px; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .num-btn { width: 75px; height: 75px; border-radius: 50%; border: 1px solid #333; font-size: 24px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); transition:0.1s; }
+        .num-btn:active { background: var(--primary); transform: scale(0.9); }
 
         /* --- HEADER --- */
-        header { padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .brand { font-size: 24px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .profile-btn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; }
+        header { padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-size: 24px; font-weight: 800; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .profile-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); overflow: hidden; background: #222; position: relative; }
         .profile-btn img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-placeholder { width: 100%; height: 100%; background: #222; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
         /* --- DASHBOARD --- */
-        .dashboard { padding: 0 24px; margin-bottom: 20px; }
-        .balance-card { text-align: center; padding: 25px; position: relative; overflow: hidden; }
-        .balance-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent); transform: rotate(45deg); animation: shine 6s infinite; }
-        
-        .bal-label { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--sub); margin-bottom: 5px; }
-        .bal-amount { font-size: 42px; font-weight: 700; letter-spacing: -1px; text-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        .dashboard { padding: 0 24px 20px; }
+        .card { 
+            background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 24px; padding: 20px; 
+            text-align: center; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .bal-val { font-size: 42px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        .edit-pen { font-size: 14px; color: var(--sub); border: 1px solid #444; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
 
-        /* --- TABS --- */
-        .tab-bar { margin: 0 24px 15px; background: #111; border-radius: 15px; padding: 5px; display: flex; border: 1px solid var(--border); }
-        .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 13px; color: var(--sub); border-radius: 12px; transition: 0.3s; font-weight: 500; }
-        .tab-btn.active { background: #222; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        /* BUDGET BAR */
+        .budget-wrap { margin-top: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; height: 30px; position: relative; overflow: hidden; display:flex; align-items:center; padding: 0 10px; }
+        .budget-fill { position: absolute; top:0; left:0; height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); opacity: 0.3; width: 0%; transition: 1s ease; }
+        .budget-text { position: relative; z-index: 2; font-size: 11px; color: #fff; width: 100%; display: flex; justify-content: space-between; font-weight: 600; }
+        .budget-line { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--primary); width: 0%; transition: 1s ease; z-index: 3; }
+
+        /* --- MONTH SELECTOR --- */
+        .month-nav { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 5px 0 15px; }
+        .month-btn { background: none; border: none; color: var(--sub); font-size: 20px; cursor: pointer; padding: 10px; }
+        .month-label { font-size: 16px; font-weight: 600; color: #fff; width: 140px; text-align: center; }
 
         /* --- VIEWS --- */
-        .view { flex: 1; overflow-y: auto; padding: 0 24px 100px; display: none; scroll-behavior: smooth; }
-        .view.active { display: block; animation: fadeUp 0.4s ease; }
+        .view-container { flex: 1; overflow-y: auto; padding-bottom: 100px; scroll-behavior: smooth; }
+        .view { padding: 0 24px; display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+
+        /* --- LIST & STATS --- */
+        .txn { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .inc { color: var(--success); } .exp { color: var(--text); } .lent { color: var(--warn); }
+        
+        .stat-item { margin-bottom: 12px; }
+        .stat-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; color: var(--sub); }
+        .stat-track { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
+        .stat-fill { height: 100%; background: var(--primary); border-radius: 4px; }
 
         /* --- INPUTS --- */
-        .input-box { width: 100%; background: #111; border: 1px solid var(--border); color: #fff; padding: 18px; border-radius: 16px; font-size: 16px; margin-bottom: 12px; outline: none; transition: 0.3s; }
-        .input-box:focus { border-color: var(--primary); background: #161616; }
-        
-        .action-btn { width: 100%; padding: 18px; border-radius: 16px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
-        .btn-primary:active { transform: scale(0.98); }
+        .input-box { width: 100%; background: #111; border: 1px solid var(--border); color: #fff; padding: 16px; border-radius: 14px; font-size: 16px; margin-bottom: 12px; outline: none; }
+        .action-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; font-size: 16px; font-weight: 700; margin-top: 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; }
 
-        /* --- LIST ITEMS --- */
-        .txn { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .txn-left h4 { margin: 0 0 4px; font-size: 15px; }
-        .txn-left span { font-size: 12px; color: var(--sub); }
-        .txn-right { font-weight: 700; font-size: 16px; }
-        .inc { color: var(--success); } .exp { color: var(--text); } .lent { color: #f59e0b; }
+        /* --- NAV --- */
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; background: var(--glass-nav); backdrop-filter: blur(20px); border-top: 1px solid var(--border); 
+            display: flex; justify-content: space-around; padding: 12px 0 calc(15px + env(safe-area-inset-bottom)); z-index: 100;
+        }
+        .nav-item { color: #666; font-size: 10px; text-align: center; width: 60px; }
+        .nav-icon { font-size: 22px; margin-bottom: 2px; filter: grayscale(1); opacity: 0.5; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active .nav-icon { filter: grayscale(0); opacity: 1; transform: translateY(-3px); text-shadow: 0 0 10px var(--primary); }
 
-        /* --- PROFILE UPLOAD --- */
-        .upload-area { width: 100px; height: 100px; border-radius: 50%; background: #222; margin: 0 auto 20px; position: relative; overflow: hidden; border: 2px dashed var(--sub); }
+        /* --- MODAL --- */
+        #view-profile { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; padding: 20px; text-align: center; overflow-y: auto; }
+        .upload-area { width: 100px; height: 100px; border-radius: 50%; background: #222; margin: 40px auto 20px; position: relative; border: 2px dashed #444; overflow: hidden; }
         .upload-area img { width: 100%; height: 100%; object-fit: cover; }
-        .upload-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; color: var(--sub); pointer-events: none; }
 
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shine { 0% { left: -50%; } 100% { left: 150%; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+    
+    <div class="aura blue"></div>
+    <div class="aura purple"></div>
 
-    <div id="offline-screen">
-        <div class="wifi-icon">📡</div>
-        <h2>No Connection</h2>
-        <p style="color:var(--sub); max-width: 250px; margin: 0 auto;">Xpense Cloud requires internet to sync.</p>
-        <button class="action-btn btn-primary" style="width:200px; margin-top:20px" onclick="location.reload()">Retry</button>
+    <div id="lock-screen">
+        <div class="pin-dots" id="pin-dots">••••••</div>
+        <div class="numpad" id="numpad"></div>
     </div>
 
     <header>
         <div class="brand">Xpense.</div>
         <div class="profile-btn" onclick="openProfile()">
             <img id="header-avatar" src="" style="display:none">
-            <div id="header-placeholder" class="profile-placeholder">U</div>
+            <div id="header-ph" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#666">U</div>
         </div>
     </header>
 
     <div class="dashboard">
-        <div class="glass-card balance-card">
-            <div class="bal-label">Total Balance</div>
-            <div class="bal-amount" id="balance">₹0</div>
+        <div class="card">
+            <div style="font-size:11px; color:var(--sub); text-transform:uppercase; letter-spacing:1px" onclick="editBalance()">Net Balance</div>
+            <div class="bal-val" onclick="editBalance()"><span id="balance">₹0</span> <div class="edit-pen">✎</div></div>
+            
+            <div class="budget-wrap" onclick="tab('stats', document.querySelectorAll('.nav-item')[1])">
+                <div class="budget-fill" id="budget-fill"></div>
+                <div class="budget-line" id="budget-line"></div>
+                <div class="budget-text">
+                    <span id="spent-display">₹0 Spent</span>
+                    <span id="budget-display">Target: ₹20k</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="tab-bar">
-        <div class="tab-btn active" onclick="tab('home', this)">Activity</div>
-        <div class="tab-btn" onclick="tab('add', this)">+ New</div>
-        <div class="tab-btn" onclick="tab('petrol', this)">⛽ Petrol</div>
+    <div class="month-nav">
+        <button class="month-btn" onclick="changeMonth(-1)">&#10094;</button>
+        <div class="month-label" id="month-label">October 2025</div>
+        <button class="month-btn" onclick="changeMonth(1)">&#10095;</button>
     </div>
 
-    <div id="view-home" class="view active">
-        <div id="txn-list"></div>
-    </div>
+    <div class="view-container">
+        
+        <div id="view-home" class="view active">
+            <div class="input-box" style="padding:10px; background:rgba(255,255,255,0.05); display:flex; align-items:center; margin-bottom:15px">
+                <span style="margin-right:10px">🔍</span>
+                <input type="text" id="search-box" placeholder="Search this month..." style="background:none; border:none; color:white; width:100%; outline:none;" onkeyup="filterList()">
+            </div>
+            <div id="txn-list"></div>
+        </div>
 
-    <div id="view-add" class="view">
-        <div class="glass-card">
-            <h3 style="margin:0 0 15px; color:var(--sub); font-size:12px; text-transform:uppercase;">Transaction Details</h3>
+        <div id="view-stats" class="view">
+            <h3 style="color:var(--sub); font-size:12px; margin-bottom:15px; text-transform:uppercase">Monthly Breakdown</h3>
+            <div id="stats-container"></div>
+            
+            <div style="margin-top:30px; padding:20px; background:rgba(255,255,255,0.05); border-radius:16px;">
+                <h4 style="margin:0 0 5px">Data Options</h4>
+                <button class="action-btn" style="background:#222; margin-top:10px; font-size:14px" onclick="exportCSV()">Download CSV (Excel) 📥</button>
+            </div>
+        </div>
+
+        <div id="view-add" class="view">
             <input type="number" id="amt" class="input-box" placeholder="₹ Amount">
             <select id="type" class="input-box" onchange="toggleFields()">
                 <option value="expense">Expense</option>
@@ -140,216 +167,267 @@
                 <option value="lent">Lent Money</option>
             </select>
             <select id="cat" class="input-box"></select>
-            
             <div id="lent-fields" style="display:none">
                 <input type="text" id="person" class="input-box" placeholder="Borrower Name">
             </div>
+            <button class="action-btn" onclick="addTxn()">Save Transaction</button>
+        </div>
 
-            <button class="action-btn btn-primary" onclick="addTxn()">Save Transaction</button>
+        <div id="view-petrol" class="view">
+            <div class="card" style="margin-bottom:15px">
+                <div style="font-size:11px; color:var(--sub)">AVG MILEAGE</div>
+                <div style="font-size:32px; font-weight:700; color:var(--success)" id="avg-mileage">--</div>
+                <div style="font-size:12px; color:var(--sub)" id="odo-display">Odo: 0 km</div>
+            </div>
+            <div style="background:var(--glass); border:1px solid var(--border); border-radius:20px; padding:20px;">
+                <div style="display:flex; gap:10px">
+                    <input type="number" id="p-amt" class="input-box" placeholder="₹ Total">
+                    <input type="number" id="p-price" class="input-box" placeholder="₹ /L" value="105">
+                </div>
+                <input type="number" id="p-odo" class="input-box" placeholder="Odometer">
+                <button class="action-btn" onclick="logPetrol()">Log Fuel</button>
+            </div>
         </div>
     </div>
 
-    <div id="view-petrol" class="view">
-        <div class="glass-card" style="margin-bottom:20px; text-align:center;">
-            <div style="font-size:12px; color:var(--sub); text-transform:uppercase;">Average Mileage</div>
-            <div style="font-size:32px; font-weight:700; color:var(--success); margin:5px 0" id="avg-mileage">--</div>
-            <div style="font-size:12px; color:var(--sub);" id="odo-display">Odometer: 0 km</div>
-        </div>
-
-        <div class="glass-card">
-            <h3 style="margin:0 0 15px; color:var(--sub); font-size:12px; text-transform:uppercase;">Refuel Log</h3>
-            <div style="display:flex; gap:10px;">
-                <input type="number" id="p-amt" class="input-box" placeholder="₹ Amount">
-                <input type="number" id="p-price" class="input-box" placeholder="₹ Price/L" value="105">
-            </div>
-            <input type="number" id="p-odo" class="input-box" placeholder="Current Odometer (km)">
-            <button class="action-btn btn-primary" onclick="logPetrol()">Log Fuel</button>
-        </div>
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="tab('home', this)"><div class="nav-icon">🏠</div>Activity</div>
+        <div class="nav-item" onclick="tab('stats', this)"><div class="nav-icon">📊</div>Stats</div>
+        <div class="nav-item" onclick="tab('add', this)"><div class="nav-icon">➕</div>Add</div>
+        <div class="nav-item" onclick="tab('petrol', this)"><div class="nav-icon">⛽</div>Fuel</div>
     </div>
 
-    <div id="view-profile" class="view" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:500; padding-top:60px;">
-        <div style="position:absolute; top:20px; right:20px; font-size:24px;" onclick="closeProfile()">&times;</div>
-        <div style="text-align:center;">
-            <div class="upload-area" onclick="document.getElementById('file-in').click()">
-                <img id="profile-preview" src="" style="display:none">
-                <div class="upload-icon" id="upload-icon">📷</div>
-            </div>
-            <input type="file" id="file-in" accept="image/*" style="display:none" onchange="uploadImg()">
-            
-            <input type="text" id="user-name-in" class="input-box" placeholder="Your Name" style="width:80%; text-align:center;">
-            <button class="action-btn btn-primary" style="width:80%" onclick="saveProfile()">Save Profile</button>
+    <div id="view-profile">
+        <div style="position:absolute; top:20px; right:20px; font-size:30px; cursor:pointer" onclick="closeProfile()">&times;</div>
+        <div class="upload-area" onclick="document.getElementById('file-in').click()">
+            <img id="profile-preview" src="" style="display:none">
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#666">📷</div>
         </div>
+        <input type="file" id="file-in" accept="image/*" style="display:none" onchange="uploadImg()">
+        
+        <label style="color:var(--sub); font-size:12px; display:block; text-align:left; margin:10px 0 5px 5%">YOUR NAME</label>
+        <input type="text" id="user-name-in" class="input-box" placeholder="Name">
+        
+        <label style="color:var(--sub); font-size:12px; display:block; text-align:left; margin:10px 0 5px 5%">MONTHLY BUDGET LIMIT (₹)</label>
+        <input type="number" id="user-budget-in" class="input-box" placeholder="20000">
+
+        <button class="action-btn" onclick="saveProfile()">Save Settings</button>
+        <button class="action-btn" style="background:#222; margin-top:20px; color:var(--danger)" onclick="if(confirm('Delete All Data?')) { localStorage.clear(); location.reload(); }">Reset App</button>
     </div>
 
     <script>
-        // DATA STORE
-        let txns = JSON.parse(localStorage.getItem('u_txns')) || [];
-        let petrol = JSON.parse(localStorage.getItem('u_petrol')) || [];
-        let user = JSON.parse(localStorage.getItem('u_user')) || { name: 'User', img: null };
-        let lastOdo = localStorage.getItem('u_odo') || 0;
-        let cats = ['🍔 Food', '🛍️ Shopping', '🏠 Rent', '🎬 Fun', '🚌 Travel', '🏥 Health'];
-
-        // --- INIT ---
-        function init() {
-            // Network Listener
-            window.addEventListener('offline', () => document.getElementById('offline-screen').style.display = 'flex');
-            window.addEventListener('online', () => document.getElementById('offline-screen').style.display = 'none');
-            
-            loadProfile();
-            renderCats();
-            renderList();
-            updateBal();
-            renderPetrol();
-        }
-
-        // --- NAVIGATION ---
-        function tab(name, el) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-'+name).classList.add('active');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        // --- PROFILE LOGIC ---
-        function openProfile() { document.getElementById('view-profile').style.display = 'block'; }
-        function closeProfile() { document.getElementById('view-profile').style.display = 'none'; }
+        // CONFIG
+        const PIN = "121013";
+        let inputPin = "";
+        let txns = JSON.parse(localStorage.getItem('x_txns')) || [];
+        let petrol = JSON.parse(localStorage.getItem('x_petrol')) || [];
+        let user = JSON.parse(localStorage.getItem('x_user')) || { name: 'User', img: null, budget: 20000 };
+        let lastOdo = localStorage.getItem('x_odo') || 0;
+        let cats = ['🍔 Food', '🛍️ Shopping', '🎬 Fun', '🚌 Travel', '🏥 Health', '🏠 Rent'];
         
-        function uploadImg() {
-            const file = document.getElementById('file-in').files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profile-preview').src = e.target.result;
-                    document.getElementById('profile-preview').style.display = 'block';
-                    document.getElementById('upload-icon').style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
+        // TIME MACHINE
+        let displayDate = new Date(); // Tracks the currently viewed month
+
+        // INIT
+        function init() {
+            renderNumpad();
+            loadProfile(); renderCats();
+            refreshView(); // This loads list, stats, and budget for current month
         }
 
-        function saveProfile() {
-            const name = document.getElementById('user-name-in').value;
-            const imgSrc = document.getElementById('profile-preview').src;
+        // --- CORE LOGIC ---
+        function refreshView() {
+            // Update Month Label
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('month-label').innerText = `${monthNames[displayDate.getMonth()]} ${displayDate.getFullYear()}`;
+
+            // Filter Transactions for this Month
+            const currentMonthStr = `${displayDate.getMonth()+1}/${displayDate.getFullYear()}`; // "10/2025" logic
             
-            if(name) user.name = name;
-            if(imgSrc && imgSrc.startsWith('data:')) user.img = imgSrc;
+            // Note: Date stored as "M/D/YYYY" or "D/M/YYYY" depending on locale. 
+            // We need robust checking.
+            const filteredTxns = txns.filter(t => {
+                const d = new Date(t.date);
+                return d.getMonth() === displayDate.getMonth() && d.getFullYear() === displayDate.getFullYear();
+            });
+
+            renderList(filteredTxns);
+            renderStats(filteredTxns);
+            updateBudget(filteredTxns);
+            updateBal(); // Balance is GLOBAL (all time), not just monthly
+        }
+
+        function changeMonth(dir) {
+            displayDate.setMonth(displayDate.getMonth() + dir);
+            refreshView();
+        }
+
+        // --- BUDGET BAR ---
+        function updateBudget(monthlyTxns) {
+            const spent = monthlyTxns.filter(t => t.type === 'expense').reduce((a,b)=>a+b.amt,0);
+            const limit = user.budget || 20000;
+            const pct = Math.min((spent / limit) * 100, 100);
             
-            localStorage.setItem('u_user', JSON.stringify(user));
-            loadProfile();
-            closeProfile();
+            document.getElementById('spent-display').innerText = `₹${spent} Spent`;
+            document.getElementById('budget-display').innerText = `Target: ₹${limit}`;
+            
+            const fill = document.getElementById('budget-fill');
+            const line = document.getElementById('budget-line');
+            
+            fill.style.width = pct + "%";
+            line.style.width = pct + "%";
+            
+            // Colors
+            let color = 'var(--primary)'; // Blue/Green
+            if(pct > 50) color = 'var(--warn)'; // Yellow
+            if(pct > 90) color = 'var(--danger)'; // Red
+            
+            line.style.background = color;
+            fill.style.background = `linear-gradient(90deg, ${color}, transparent)`;
         }
 
-        function loadProfile() {
-            if(user.img) {
-                document.getElementById('header-avatar').src = user.img;
-                document.getElementById('header-avatar').style.display = 'block';
-                document.getElementById('header-placeholder').style.display = 'none';
-                
-                // Set preview too
-                document.getElementById('profile-preview').src = user.img;
-                document.getElementById('profile-preview').style.display = 'block';
-                document.getElementById('upload-icon').style.display = 'none';
-            }
-            document.getElementById('user-name-in').value = user.name;
-        }
-
-        // --- TRANSACTION LOGIC ---
-        function renderCats() {
-            const sel = document.getElementById('cat');
-            sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
-        }
-
-        function toggleFields() {
-            const type = document.getElementById('type').value;
-            document.getElementById('lent-fields').style.display = type === 'lent' ? 'block' : 'none';
-        }
-
+        // --- TRANSACTIONS ---
         function addTxn() {
             const amt = parseFloat(document.getElementById('amt').value);
             const type = document.getElementById('type').value;
             const cat = document.getElementById('cat').value;
-            
-            if(!amt) return alert('Enter Amount');
-            
-            let txn = { id: Date.now(), amt, type, cat, date: new Date().toLocaleDateString() };
-            if(type === 'lent') {
-                txn.person = document.getElementById('person').value || 'Unknown';
-                txn.cat = 'Lent to ' + txn.person;
-            }
+            if(!amt) return;
 
-            txns.unshift(txn);
-            localStorage.setItem('u_txns', JSON.stringify(txns));
+            // Save Date as standard format for parsing
+            let txn = { id: Date.now(), amt, type, cat, date: new Date().toLocaleDateString('en-US') }; 
+            if(type === 'lent') { txn.person = document.getElementById('person').value || 'Unknown'; txn.cat = 'Lent: '+txn.person; }
             
+            txns.unshift(txn); localStorage.setItem('x_txns', JSON.stringify(txns));
             document.getElementById('amt').value = '';
-            renderList(); updateBal();
-            tab('home', document.querySelectorAll('.tab-btn')[0]);
+            
+            // Jump to current month to see new txn
+            displayDate = new Date(); 
+            refreshView();
+            tab('home', document.querySelectorAll('.nav-item')[0]);
         }
 
-        // --- PETROL LOGIC FIXED ---
+        function renderList(data) {
+            document.getElementById('txn-list').innerHTML = data.length ? data.map(t => `
+                <div class="txn">
+                    <div><div style="font-weight:600">${t.cat}</div><div style="font-size:12px; color:var(--sub)">${new Date(t.date).toLocaleDateString()}</div></div>
+                    <div class="${t.type==='income'?'inc':(t.type==='lent'?'lent':'exp')}">${t.type==='income'?'+':'-'}₹${t.amt}</div>
+                </div>`).join('') : `<div style="text-align:center; padding:20px; color:var(--sub)">No transactions this month.</div>`;
+        }
+
+        function renderStats(data) {
+            const map = {};
+            let total = 0;
+            data.filter(t => t.type === 'expense').forEach(t => {
+                map[t.cat] = (map[t.cat] || 0) + t.amt;
+                total += t.amt;
+            });
+            
+            let html = "";
+            for(let [c, amt] of Object.entries(map)) {
+                let pct = total > 0 ? (amt / total * 100) : 0;
+                html += `
+                <div class="stat-item">
+                    <div class="stat-header"><span>${c}</span><span>₹${amt} (${Math.round(pct)}%)</span></div>
+                    <div class="stat-track"><div class="stat-fill" style="width:${pct}%"></div></div>
+                </div>`;
+            }
+            document.getElementById('stats-container').innerHTML = html || "<div style='text-align:center; color:var(--sub)'>No spending data.</div>";
+        }
+
+        // --- GLOBAL UTILS ---
+        function calculateBal() { return txns.reduce((a,t) => t.type==='income'?a+t.amt:a-t.amt, 0); }
+        function updateBal() { document.getElementById('balance').innerText = `₹${calculateBal()}`; }
+        function editBalance() {
+            let cur = calculateBal();
+            let real = prompt(`Actual Bank Balance?`);
+            if(real && !isNaN(real)) {
+                let diff = parseFloat(real) - cur;
+                if(diff !== 0) {
+                    txns.unshift({ id: Date.now(), amt: Math.abs(diff), type: diff>0?'income':'expense', cat: '⚙️ Correction', date: new Date().toLocaleDateString('en-US') });
+                    localStorage.setItem('x_txns', JSON.stringify(txns));
+                    refreshView();
+                }
+            }
+        }
+
+        // --- LOCK SCREEN ---
+        function renderNumpad() {
+            const pad = document.getElementById('numpad');
+            [1,2,3,4,5,6,7,8,9,'C',0,'<'].forEach(n => {
+                let b = document.createElement('div');
+                b.className = 'num-btn'; b.innerText = n==='<'?'⌫':n;
+                b.onclick = () => handlePin(n);
+                pad.appendChild(b);
+            });
+        }
+        function handlePin(n) {
+            if(navigator.vibrate) navigator.vibrate(5);
+            if(n==='C') inputPin=""; 
+            else if(n==='<') inputPin=inputPin.slice(0,-1); 
+            else if(inputPin.length<6) inputPin+=n;
+            document.getElementById('pin-dots').innerText = "•".repeat(inputPin.length);
+            if(inputPin === PIN) document.getElementById('lock-screen').style.display='none';
+        }
+
+        // --- PETROL & PROFILE ---
         function logPetrol() {
             const amt = parseFloat(document.getElementById('p-amt').value);
             const price = parseFloat(document.getElementById('p-price').value);
             const odo = parseFloat(document.getElementById('p-odo').value);
-
-            if(!amt || !price || !odo) return alert('Fill all fields (Amount, Price, Odometer)');
-
-            const litres = (amt / price).toFixed(2);
-            let mileage = 0;
-
-            if(lastOdo > 0 && odo > lastOdo) {
-                const dist = odo - lastOdo;
-                mileage = (dist / litres).toFixed(1);
-            }
-
-            lastOdo = odo;
-            localStorage.setItem('u_odo', odo);
-
-            // Log it
-            const log = { date: new Date().toLocaleDateString(), amt, litres, mileage, odo };
-            petrol.unshift(log);
-            localStorage.setItem('u_petrol', JSON.stringify(petrol));
-
-            // Also add to expenses
-            txns.unshift({ id: Date.now(), amt, type: 'expense', cat: '⛽ Petrol', note: `${litres}L @ ₹${price}` });
-            localStorage.setItem('u_txns', JSON.stringify(txns));
-
-            alert(`Logged! Mileage: ${mileage} km/L`);
-            renderPetrol(); renderList(); updateBal();
+            if(!amt || !price || !odo) return alert('Fill all fields');
             
+            const litres = (amt/price).toFixed(2);
+            let mileage = 0;
+            if(lastOdo > 0 && odo > lastOdo) mileage = ((odo - lastOdo) / litres).toFixed(1);
+            
+            lastOdo = odo; localStorage.setItem('x_odo', odo);
+            petrol.unshift({ date: new Date().toLocaleDateString('en-US'), amt, litres, mileage, odo });
+            localStorage.setItem('x_petrol', JSON.stringify(petrol));
+            
+            // Add as Expense
+            txns.unshift({ id: Date.now(), amt, type: 'expense', cat: '⛽ Petrol', date: new Date().toLocaleDateString('en-US') });
+            localStorage.setItem('x_txns', JSON.stringify(txns));
+            
+            alert(`Mileage: ${mileage} km/L`);
+            refreshView();
             document.getElementById('p-amt').value = '';
         }
 
-        function renderPetrol() {
-            document.getElementById('odo-display').innerText = `Odometer: ${lastOdo} km`;
-            const valid = petrol.filter(p => p.mileage > 0);
-            if(valid.length) {
-                const avg = (valid.reduce((a,b)=>a+parseFloat(b.mileage),0) / valid.length).toFixed(1);
-                document.getElementById('avg-mileage').innerText = `${avg} km/L`;
-            }
+        function saveProfile() {
+            const name = document.getElementById('user-name-in').value;
+            const budg = document.getElementById('user-budget-in').value;
+            const img = document.getElementById('profile-preview').src;
+            
+            if(name) user.name = name;
+            if(budg) user.budget = budg;
+            if(img && img.startsWith('data:')) user.img = img;
+            
+            localStorage.setItem('x_user', JSON.stringify(user));
+            loadProfile(); closeProfile(); refreshView();
+        }
+        
+        function loadProfile() {
+            if(user.img) { document.getElementById('header-avatar').src = user.img; document.getElementById('header-avatar').style.display='block'; document.getElementById('header-ph').style.display='none'; }
+            document.getElementById('user-name-in').value = user.name;
+            document.getElementById('user-budget-in').value = user.budget;
         }
 
-        // --- HELPERS ---
-        function renderList() {
-            const list = document.getElementById('txn-list');
-            list.innerHTML = txns.map(t => `
-                <div class="txn">
-                    <div class="txn-left">
-                        <h4>${t.cat}</h4>
-                        <span>${t.date} ${t.note ? '• '+t.note : ''}</span>
-                    </div>
-                    <div class="txn-right ${t.type==='income'?'inc':(t.type==='lent'?'lent':'exp')}">
-                        ${t.type==='income'?'+':'-'}₹${t.amt}
-                    </div>
-                </div>
-            `).join('');
+        // HELPER
+        function tab(view, el) {
+            if(navigator.vibrate) navigator.vibrate(5);
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-'+view).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
         }
-
-        function updateBal() {
-            const bal = txns.reduce((acc, t) => {
-                if(t.type === 'income') return acc + t.amt;
-                return acc - t.amt;
-            }, 0);
-            document.getElementById('balance').innerText = `₹${bal}`;
+        function renderCats() { document.getElementById('cat').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join(''); }
+        function toggleFields() { document.getElementById('lent-fields').style.display = document.getElementById('type').value === 'lent' ? 'block' : 'none'; }
+        function openProfile() { document.getElementById('view-profile').style.display='block'; }
+        function closeProfile() { document.getElementById('view-profile').style.display='none'; }
+        function uploadImg() { const f = document.getElementById('file-in').files[0]; const r = new FileReader(); r.onload = e => { document.getElementById('profile-preview').src=e.target.result; document.getElementById('profile-preview').style.display='block'; }; if(f) r.readAsDataURL(f); }
+        function exportCSV() {
+            let csv = "Date,Type,Category,Amount\n" + txns.map(t => `${t.date},${t.type},${t.cat},${t.amt}`).join("\n");
+            let link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "xpense_data.csv"; link.click();
         }
 
         init();
