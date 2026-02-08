@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>Xpense Ultimate v4</title>
+    <title>Xpense Ultimate v5</title>
     
     <style>
         /* --- THEME VARS --- */
@@ -55,68 +55,17 @@
         .profile-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; background: #222; position: relative; }
         .profile-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- DASHBOARD & CLASSY CARD --- */
+        /* --- DASHBOARD --- */
         .dashboard { padding: 10px 24px; }
-        
         .card { 
-            position: relative;
-            background: #111; /* Deep Matte Base */
-            border-radius: 26px;
-            padding: 30px 25px;
-            text-align: center;
-            overflow: hidden;
-            /* Subtle, premium border */
-            border: 1px solid rgba(255,255,255,0.08); 
-            /* Deep drop shadow for depth */
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); 
+            position: relative; background: #111; border-radius: 26px; padding: 30px 25px; text-align: center; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); 
         }
-
-        /* The Ambient Light Spotlight */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            /* Soft radial glow using the theme color */
-            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-            opacity: 0.2; /* Subtle opacity */
-            filter: blur(40px);
-            pointer-events: none;
-            z-index: 0;
-            transition: background 0.5s ease;
-        }
-
-        /* Ensure content sits above the glow */
+        .card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); opacity: 0.2; filter: blur(40px); pointer-events: none; z-index: 0; transition: background 0.5s ease; }
         .bal-val, .budget-wrap, .card div { position: relative; z-index: 2; }
-
-        .bal-val { 
-            font-size: 48px; 
-            font-weight: 600; 
-            letter-spacing: -1.5px; 
-            margin: 15px 0 25px 0;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: #fff; 
-        }
-        
-        .edit-pen { 
-            font-size: 16px; 
-            width: 28px; height: 28px; 
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center;
-            margin-left: 12px; 
-            opacity: 0.6; 
-            cursor: pointer; 
-            color: #fff;
-            transition: 0.2s;
-        }
+        .bal-val { font-size: 48px; font-weight: 600; letter-spacing: -1.5px; margin: 15px 0 25px 0; display: flex; align-items: center; justify-content: center; color: #fff; }
+        .edit-pen { font-size: 16px; width: 28px; height: 28px; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: 12px; opacity: 0.6; cursor: pointer; color: #fff; transition: 0.2s; }
         .edit-pen:active { transform: scale(0.9); opacity: 1; background: var(--primary); }
         .blur-mode { filter: blur(12px); }
-        
         .budget-wrap { margin-top: 20px; background: rgba(0,0,0,0.3); border-radius: 10px; height: 36px; position: relative; overflow: hidden; display:flex; align-items:center; padding: 0 12px; border: 1px solid rgba(255,255,255,0.05); }
         .budget-fill { position: absolute; top:0; left:0; height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); opacity: 0.25; width: 0%; transition: 1s ease; }
         .budget-text { position: relative; z-index: 2; font-size: 11px; color: #eee; width: 100%; display: flex; justify-content: space-between; font-weight: 600; align-items: center; letter-spacing: 0.3px; }
@@ -139,12 +88,6 @@
         .txn.settled { opacity: 0.5; }
         .inc { color: var(--success); } .exp { color: var(--text); } .lent { color: var(--warn); }
         .tag-pill { font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; font-weight: bold; border: 1px solid; }
-        
-        /* --- DONUT CHART --- */
-        .chart-wrap { position: relative; width: 200px; height: 200px; margin: 20px auto; border-radius: 50%; background: conic-gradient(rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 100%); }
-        .chart-hole { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; height: 140px; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: var(--sub); }
-        .color-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
 
         /* --- BOTTOM NAV --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--glass-nav); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 12px 0 calc(15px + env(safe-area-inset-bottom)); z-index: 100; }
@@ -189,12 +132,7 @@
         <div class="card">
             <div style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.5; z-index:5" onclick="togglePrivacy()">👁️</div>
             <div style="font-size:11px; color:var(--sub); text-transform:uppercase; letter-spacing:1px; position:relative; z-index:2">Net Balance</div>
-            
-            <div class="bal-val">
-                <span id="balance">₹0</span> 
-                <span class="edit-pen" onclick="editBalance()">✎</span>
-            </div>
-            
+            <div class="bal-val"><span id="balance">₹0</span> <span class="edit-pen" onclick="editBalance()">✎</span></div>
             <div class="budget-wrap">
                 <div class="budget-fill" id="budget-fill"></div>
                 <div class="budget-line" id="budget-line"></div>
@@ -213,7 +151,6 @@
     </div>
 
     <div class="view-container">
-        
         <div id="view-home" class="view active">
             <div class="input-box" style="padding:10px; background:rgba(255,255,255,0.05); display:flex; align-items:center; margin-bottom:15px">
                 <span style="margin-right:10px">🔍</span>
@@ -224,12 +161,6 @@
 
         <div id="view-stats" class="view">
             <h3 style="color:var(--sub); font-size:12px; text-transform:uppercase; text-align:center">Spending Distribution</h3>
-            <div class="chart-wrap" id="donut-chart">
-                <div class="chart-hole">
-                    <div style="font-size:10px; color:var(--sub)">TOTAL EXPENSE</div>
-                    <div style="font-size:20px; font-weight:bold" id="stat-total">₹0</div>
-                </div>
-            </div>
             <div id="stats-legend"></div>
         </div>
 
@@ -239,29 +170,17 @@
                 <button class="action-btn" style="flex:1; background:#222; font-size:13px" onclick="setAddType('income')" id="btn-type-inc">Income</button>
                 <button class="action-btn" style="flex:1; background:#222; font-size:13px" onclick="setAddType('lent')" id="btn-type-lent">Lent</button>
             </div>
-
             <input type="number" id="amt" class="input-box" placeholder="₹ Amount">
-            
-            <div id="cat-wrapper">
-                <select id="cat" class="input-box" onchange="checkFields()"></select>
-            </div>
-
+            <div id="cat-wrapper"><select id="cat" class="input-box" onchange="checkFields()"></select></div>
             <div id="lent-fields" style="display:none">
                 <input type="text" id="person" class="input-box" placeholder="Borrower Name">
                 <input type="date" id="due-date" class="input-box" style="color-scheme:dark">
             </div>
-
             <div id="petrol-fields" style="display:none; background:rgba(255,255,255,0.05); padding:15px; border-radius:14px; margin-bottom:10px; border:1px solid var(--primary)">
                 <label style="font-size:12px; color:var(--primary); font-weight:bold; display:block; margin-bottom:10px">⛽ FUEL DETAILS</label>
                 <input type="number" id="p-price" class="input-box" placeholder="Price/Liter (₹)" value="105">
                 <input type="number" id="p-odo" class="input-box" placeholder="Current Odometer (km)">
             </div>
-
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px" id="recur-option">
-                <input type="checkbox" id="is-recur" style="width:20px; height:20px">
-                <label for="is-recur" style="color:var(--sub); font-size:14px">Recurring (Subscription/Bill)</label>
-            </div>
-
             <button class="action-btn" onclick="addTxn()">Save Transaction</button>
         </div>
 
@@ -283,53 +202,30 @@
     </div>
 
     <div id="view-profile">
-        <div style="display:flex; justify-content:space-between; align-items:center">
-            <h2>Settings</h2>
-            <div style="font-size:24px; cursor:pointer" onclick="closeProfile()">&times;</div>
-        </div>
-
+        <div style="display:flex; justify-content:space-between; align-items:center"><h2>Settings</h2><div style="font-size:24px; cursor:pointer" onclick="closeProfile()">&times;</div></div>
         <div style="text-align:center; margin:20px 0">
             <div style="width:80px; height:80px; border-radius:50%; background:#222; margin:0 auto; overflow:hidden; border:2px dashed #444; position:relative" onclick="document.getElementById('file-in').click()">
-                <img id="profile-preview" src="" style="width:100%; height:100%; object-fit:cover; display:none">
-                <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#666">📷</div>
+                <img id="profile-preview" src="" style="width:100%; height:100%; object-fit:cover; display:none"><div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#666">📷</div>
             </div>
             <input type="file" id="file-in" accept="image/*" style="display:none" onchange="uploadImg()">
             <input type="text" id="user-name-in" class="input-box" style="margin-top:15px; text-align:center" placeholder="Your Name">
         </div>
-
-        <div style="background:#111; padding:15px; border-radius:12px; margin-bottom:15px">
-            <label style="color:var(--sub); font-size:12px; display:block; margin-bottom:10px">APP THEME</label>
-            <div style="display:flex; gap:15px; justify-content:center">
-                <div class="theme-dot" style="background:#3b82f6" onclick="setTheme('#3b82f6', '#8b5cf6')"></div>
-                <div class="theme-dot" style="background:#f59e0b" onclick="setTheme('#f59e0b', '#ef4444')"></div>
-                <div class="theme-dot" style="background:#10b981" onclick="setTheme('#10b981', '#3b82f6')"></div>
-                <div class="theme-dot" style="background:#ec4899" onclick="setTheme('#ec4899', '#f43f5e')"></div>
-            </div>
-        </div>
-
         <button class="action-btn" style="background:#222; margin-bottom:10px" onclick="downloadJSON()">📤 Backup Data (JSON)</button>
-        <button class="action-btn" style="background:#222; margin-bottom:30px" onclick="document.getElementById('json-in').click()">📥 Restore Data</button>
-        <input type="file" id="json-in" accept=".json" style="display:none" onchange="restoreJSON()">
-
         <button class="action-btn" style="background:transparent; border:1px solid var(--danger); color:var(--danger)" onclick="resetApp()">Reset App</button>
     </div>
 
     <script>
-        // --- CONFIG & STATE ---
         let PIN = localStorage.getItem('x_pin');
         let inputPin = "";
         let failedAttempts = 0;
-        
         let txns = JSON.parse(localStorage.getItem('x_txns')) || [];
         let petrol = JSON.parse(localStorage.getItem('x_petrol')) || [];
         let user = JSON.parse(localStorage.getItem('x_user')) || { name: 'User', img: null, budget: 20000, themeP: '#3b82f6', themeA: '#8b5cf6' };
         let customCats = JSON.parse(localStorage.getItem('x_custom_cats')) || { expense: [], income: [] };
-        let lastOdo = localStorage.getItem('x_odo') || 0;
-
+        let lastOdo = parseFloat(localStorage.getItem('x_odo')) || 0;
         let displayDate = new Date();
         let addType = 'expense';
         let privacyMode = false;
-        
         const defExp = ['🍔 Food', '🛍️ Shopping', '🎬 Fun', '⛽ Petrol', '🚌 Travel', '🏠 Rent', '⚡ Bills', '🏥 Health'];
         const defInc = ['💰 Salary', '💵 Allowance', '🎁 Bonus', '🪙 Other'];
 
@@ -338,446 +234,102 @@
             renderNumpad();
             if(!PIN) setupNewPin();
             else checkLockout();
-            
             updateGreeting();
             refreshView();
             loadProfile();
         }
 
-        // --- SECURITY ---
-        function setupNewPin() {
-            document.getElementById('lock-title').innerText = "Welcome! Set PIN";
-            document.getElementById('lock-msg').innerText = "Create a 6-digit PIN";
-            PIN = null; 
-        }
-
-        function checkLockout() {
-            const unlockTime = localStorage.getItem('lockout_until');
-            if(unlockTime && Date.now() < unlockTime) startLockout(Math.ceil((unlockTime - Date.now())/1000));
-        }
-
-        function startLockout(seconds) {
-            document.querySelectorAll('.num-btn').forEach(b => b.classList.add('disabled'));
-            let s = seconds;
-            const timer = setInterval(() => {
-                document.getElementById('lock-msg').innerText = `Locked! Wait ${s}s`;
-                s--;
-                if(s < 0) {
-                    clearInterval(timer);
-                    document.getElementById('lock-msg').innerText = "Enter PIN";
-                    document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('disabled'));
-                    localStorage.removeItem('lockout_until');
-                    failedAttempts = 0;
-                }
-            }, 1000);
-        }
-
+        function setupNewPin() { document.getElementById('lock-title').innerText = "Welcome! Set PIN"; document.getElementById('lock-msg').innerText = "Create a 6-digit PIN"; PIN = null; }
+        function checkLockout() { const unlockTime = localStorage.getItem('lockout_until'); if(unlockTime && Date.now() < unlockTime) startLockout(Math.ceil((unlockTime - Date.now())/1000)); }
+        function startLockout(seconds) { document.querySelectorAll('.num-btn').forEach(b => b.classList.add('disabled')); let s = seconds; const timer = setInterval(() => { document.getElementById('lock-msg').innerText = `Locked! Wait ${s}s`; s--; if(s < 0) { clearInterval(timer); document.getElementById('lock-msg').innerText = "Enter PIN"; document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('disabled')); localStorage.removeItem('lockout_until'); failedAttempts = 0; } }, 1000); }
+        
         function handlePin(n) {
             if(localStorage.getItem('lockout_until')) return;
-            if(navigator.vibrate) navigator.vibrate(10);
-            
-            if(n==='C') inputPin="";
-            else if(n==='<') inputPin=inputPin.slice(0,-1);
-            else if(inputPin.length<6) inputPin+=n;
-            
+            if(n==='C') inputPin=""; else if(n==='<') inputPin=inputPin.slice(0,-1); else if(inputPin.length<6) inputPin+=n;
             document.getElementById('pin-dots').innerText = "•".repeat(inputPin.length);
-            
             if(inputPin.length === 6) {
-                if(!PIN) {
-                    PIN = inputPin;
-                    localStorage.setItem('x_pin', PIN);
-                    alert("PIN Set Successfully!");
-                    document.getElementById('lock-screen').style.display='none';
-                } else if(inputPin === PIN) {
-                    document.getElementById('lock-screen').style.display='none';
-                    failedAttempts = 0;
-                } else {
-                    inputPin = "";
-                    document.getElementById('pin-dots').innerText = "";
-                    failedAttempts++;
-                    document.getElementById('lock-msg').innerText = `Wrong (${failedAttempts}/3)`;
-                    navigator.vibrate([50,50,50]);
-                    if(failedAttempts >= 3) {
-                        localStorage.setItem('lockout_until', Date.now() + 30000);
-                        startLockout(30);
-                    }
-                }
+                if(!PIN) { PIN = inputPin; localStorage.setItem('x_pin', PIN); document.getElementById('lock-screen').style.display='none'; }
+                else if(inputPin === PIN) { document.getElementById('lock-screen').style.display='none'; failedAttempts = 0; }
+                else { inputPin = ""; document.getElementById('pin-dots').innerText = ""; failedAttempts++; document.getElementById('lock-msg').innerText = `Wrong (${failedAttempts}/3)`; if(failedAttempts >= 3) { localStorage.setItem('lockout_until', Date.now() + 30000); startLockout(30); } }
             }
         }
 
-        // --- CORE UI ---
         function refreshView() {
             const m = displayDate.toLocaleString('default', { month: 'long', year: 'numeric' });
             document.getElementById('month-label').innerText = m;
-
-            const filtered = txns.filter(t => {
-                const d = new Date(t.date);
-                return d.getMonth() === displayDate.getMonth() && d.getFullYear() === displayDate.getFullYear();
-            });
-
-            renderList(filtered);
-            renderStats(filtered);
-            updateBudget(filtered);
-            renderPetrolList();
-            updateBal();
+            const filtered = txns.filter(t => { const d = new Date(t.date); return d.getMonth() === displayDate.getMonth() && d.getFullYear() === displayDate.getFullYear(); });
+            renderList(filtered); renderStats(filtered); updateBudget(filtered); renderPetrolList(); updateBal();
         }
 
         function renderList(data) {
             const list = document.getElementById('txn-list');
             if(!data.length) { list.innerHTML = `<div style="text-align:center; padding:30px; color:#444">No transactions</div>`; return; }
-
-            list.innerHTML = data.map(t => {
-                let sub = new Date(t.date).toLocaleDateString();
-                let extra = "";
-                let clickAction = "";
-
-                if(t.type === 'lent') {
-                    if(t.settled) {
-                        extra = `<span class="tag-pill" style="border-color:var(--success); color:var(--success)">SETTLED</span>`;
-                    } else {
-                        extra = `<span class="tag-pill" style="border-color:var(--warn); color:var(--warn)">UNPAID</span>`;
-                        clickAction = `onclick="askSettle(${t.id})"`; 
-                    }
-                    sub = `Borrower: ${t.person}`;
-                }
-
-                if(t.recur) extra += ` <span style="font-size:10px">🔁</span>`;
-
-                const cssClass = t.type === 'income' ? 'inc' : (t.type === 'lent' ? 'lent' : 'exp');
-                const sign = t.type === 'income' ? '+' : '-';
-                
-                return `
-                <div class="txn ${t.settled?'settled':''}" ${clickAction} oncontextmenu="deleteTxn(${t.id}); return false;">
-                    <div>
-                        <div style="font-weight:600">${t.cat} ${extra}</div>
-                        <div style="font-size:12px; color:var(--sub)">${sub}</div>
-                    </div>
-                    <div class="${cssClass}">${sign}₹${t.amt.toLocaleString()}</div>
-                </div>`;
-            }).join('');
-        }
-
-        function getCurrentBalance() {
-            return txns.reduce((acc, t) => {
-                if(t.type === 'income') return acc + t.amt;
-                if(t.type === 'expense' || (t.type === 'lent' && !t.settled)) return acc - t.amt;
-                return acc;
-            }, 0);
-        }
-
-        function editBalance() {
-            const current = getCurrentBalance();
-            const realStr = prompt(`Current App Balance: ₹${current}\n\nEnter your ACTUAL Bank Balance:`);
-            
-            if(realStr && !isNaN(realStr)) {
-                const real = parseFloat(realStr);
-                const diff = real - current;
-
-                if(diff === 0) return alert("Balance is already correct!");
-
-                const txn = {
-                    id: Date.now(),
-                    amt: Math.abs(diff),
-                    type: diff > 0 ? 'income' : 'expense',
-                    cat: '⚙️ Correction',
-                    note: 'Manual Adjustment',
-                    date: new Date().toISOString()
-                };
-
-                txns.unshift(txn);
-                saveData();
-                alert(`Balance updated! Added correction of ₹${Math.abs(diff)}.`);
-            }
-        }
-
-        function askSettle(id) {
-            if(confirm("Mark this debt as settled (Paid back)?")) {
-                const t = txns.find(x => x.id === id);
-                if(t) {
-                    t.settled = true;
-                    txns.unshift({
-                        id: Date.now(),
-                        amt: t.amt,
-                        type: 'income',
-                        cat: '💰 Repayment',
-                        note: 'From ' + t.person,
-                        date: new Date().toISOString()
-                    });
-                    saveData();
-                    refreshView();
-                }
-            }
-        }
-
-        function downloadJSON() {
-            const data = { txns, petrol, user, customCats, lastOdo };
-            const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `xpense_backup_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-        }
-
-        function restoreJSON() {
-            const file = document.getElementById('json-in').files[0];
-            if(!file) return;
-            const r = new FileReader();
-            r.onload = (e) => {
-                try {
-                    const d = JSON.parse(e.target.result);
-                    if(d.txns && d.user) {
-                        localStorage.setItem('x_txns', JSON.stringify(d.txns));
-                        localStorage.setItem('x_user', JSON.stringify(d.user));
-                        localStorage.setItem('x_petrol', JSON.stringify(d.petrol || []));
-                        localStorage.setItem('x_custom_cats', JSON.stringify(d.customCats || {}));
-                        localStorage.setItem('x_odo', d.lastOdo || 0);
-                        alert("Restored successfully! Restarting...");
-                        location.reload();
-                    }
-                } catch(err) { alert("Invalid Backup File"); }
-            };
-            r.readAsText(file);
-        }
-
-        function renderStats(data) {
-            const exps = data.filter(t => t.type === 'expense');
-            const total = exps.reduce((a,b) => a + b.amt, 0);
-            document.getElementById('stat-total').innerText = `₹${total.toLocaleString()}`;
-
-            if(total === 0) {
-                document.getElementById('donut-chart').style.background = `conic-gradient(rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 100%)`;
-                return;
-            }
-
-            const map = {};
-            exps.forEach(t => map[t.cat] = (map[t.cat] || 0) + t.amt);
-            
-            let grad = [];
-            let start = 0;
-            const colors = ['#3b82f6', '#8b5cf6', '#ef4444', '#10b981', '#f59e0b', '#ec4899', '#6366f1'];
-            let htmlLegend = "";
-            let i = 0;
-
-            Object.entries(map).sort((a,b) => b[1] - a[1]).forEach(([cat, amt]) => {
-                const pct = (amt / total) * 100;
-                const end = start + pct;
-                const c = colors[i % colors.length];
-                grad.push(`${c} ${start}% ${end}%`);
-                htmlLegend += `<div class="legend-item">
-                    <div style="display:flex; align-items:center"><span class="color-dot" style="background:${c}"></span>${cat}</div>
-                    <span>₹${amt.toLocaleString()} (${Math.round(pct)}%)</span>
-                </div>`;
-                start = end;
-                i++;
-            });
-
-            document.getElementById('donut-chart').style.background = `conic-gradient(${grad.join(', ')})`;
-            document.getElementById('stats-legend').innerHTML = htmlLegend;
-        }
-
-        function setAddType(t) {
-            addType = t;
-            document.querySelectorAll('#view-add .action-btn').forEach(b => b.style.opacity = '0.5');
-            document.getElementById(`btn-type-${t==='income'?'inc':(t==='lent'?'lent':'exp')}`).style.opacity = '1';
-            
-            document.getElementById('cat-wrapper').style.display = t === 'lent' ? 'none' : 'block';
-            document.getElementById('lent-fields').style.display = t === 'lent' ? 'block' : 'none';
-            document.getElementById('recur-option').style.display = t === 'expense' ? 'flex' : 'none';
-            
-            renderCats();
-        }
-
-        function renderCats() {
-            const base = addType === 'income' ? defInc : defExp;
-            const custom = customCats[addType] || [];
-            const all = [...base, ...custom];
-            document.getElementById('cat').innerHTML = all.map(c => `<option value="${c}">${c}</option>`).join('') + `<option value="new">+ New Category...</option>`;
-        }
-
-        function checkFields() {
-            const v = document.getElementById('cat').value;
-            if(v === 'new') {
-                const n = prompt("New Category Name:");
-                if(n) {
-                    const final = "🔹 " + n;
-                    if(!customCats[addType]) customCats[addType] = [];
-                    customCats[addType].push(final);
-                    localStorage.setItem('x_custom_cats', JSON.stringify(customCats));
-                    renderCats();
-                    document.getElementById('cat').value = final;
-                }
-            }
-            document.getElementById('petrol-fields').style.display = (v.includes('Petrol') && addType === 'expense') ? 'block' : 'none';
+            list.innerHTML = data.map(t => `<div class="txn" oncontextmenu="deleteTxn(${t.id}); return false;"><div><div style="font-weight:600">${t.cat}</div><div style="font-size:12px; color:var(--sub)">${new Date(t.date).toLocaleDateString()}</div></div><div class="${t.type==='income'?'inc':'exp'}">${t.type==='income'?'+':'-'}₹${t.amt.toLocaleString()}</div></div>`).join('');
         }
 
         function addTxn() {
             const amt = parseFloat(document.getElementById('amt').value);
             if(!amt) return;
-
-            const txn = {
-                id: Date.now(),
-                amt: amt,
-                type: addType,
-                date: new Date().toISOString(),
-                recur: document.getElementById('is-recur').checked
-            };
-
+            const txn = { id: Date.now(), amt, type: addType, date: new Date().toISOString() };
+            
             if(addType === 'lent') {
                 txn.person = document.getElementById('person').value || 'Unknown';
-                txn.settled = false;
                 txn.cat = 'Lent Money';
             } else {
                 txn.cat = document.getElementById('cat').value;
                 if(txn.cat.includes('Petrol') && addType === 'expense') {
                     const price = parseFloat(document.getElementById('p-price').value);
                     const odo = parseFloat(document.getElementById('p-odo').value);
-                    if(odo > lastOdo) {
-                        const litres = amt / price;
+                    
+                    // FIXED MILEAGE LOGIC
+                    let mil = 0;
+                    if(lastOdo > 0 && odo > lastOdo) {
                         const dist = odo - lastOdo;
-                        const mil = dist / litres;
-                        
-                        petrol.unshift({ date: txn.date, amt, litres: litres.toFixed(1), mileage: mil.toFixed(1), odo });
-                        localStorage.setItem('x_petrol', JSON.stringify(petrol));
-                        localStorage.setItem('x_odo', odo);
-                        lastOdo = odo;
-                        alert(`Mileage: ${mil.toFixed(1)} km/L`);
+                        const litres = amt / price;
+                        const calculatedMil = dist / litres;
+                        if(calculatedMil < 100) mil = calculatedMil.toFixed(1); 
                     }
+                    
+                    petrol.unshift({ date: txn.date, amt, litres: (amt/price).toFixed(1), mileage: mil, odo });
+                    localStorage.setItem('x_petrol', JSON.stringify(petrol));
+                    localStorage.setItem('x_odo', odo);
+                    lastOdo = odo;
+                    if(mil > 0) alert(`Mileage: ${mil} km/L`);
                 }
             }
-
-            txns.unshift(txn);
-            saveData();
-            
-            document.getElementById('amt').value = '';
-            document.getElementById('is-recur').checked = false;
-            tab('home', document.querySelectorAll('.nav-item')[0]);
+            txns.unshift(txn); saveData(); document.getElementById('amt').value = ''; tab('home', document.querySelectorAll('.nav-item')[0]);
         }
 
-        function deleteTxn(id) {
-            if(confirm("Delete this transaction permanently?")) {
-                txns = txns.filter(t => t.id !== id);
-                saveData();
-                refreshView();
-            }
+        function renderStats(data) {
+            const exps = data.filter(t => t.type === 'expense');
+            const map = {};
+            exps.forEach(t => map[t.cat] = (map[t.cat] || 0) + t.amt);
+            document.getElementById('stats-legend').innerHTML = Object.entries(map).map(([cat, amt]) => `<div class="legend-item"><span>${cat}</span><span>₹${amt.toLocaleString()}</span></div>`).join('');
         }
 
+        function setAddType(t) { addType = t; document.querySelectorAll('#view-add .action-btn').forEach(b => b.style.opacity = '0.5'); document.getElementById(`btn-type-${t==='income'?'inc':(t==='lent'?'lent':'exp')}`).style.opacity = '1'; document.getElementById('cat-wrapper').style.display = t === 'lent' ? 'none' : 'block'; document.getElementById('lent-fields').style.display = t === 'lent' ? 'block' : 'none'; renderCats(); }
+        function renderCats() { const base = addType === 'income' ? defInc : defExp; const custom = customCats[addType] || []; const all = [...base, ...custom]; document.getElementById('cat').innerHTML = all.map(c => `<option value="${c}">${c}</option>`).join('') + `<option value="new">+ New...</option>`; }
+        function checkFields() { const v = document.getElementById('cat').value; if(v === 'new') { const n = prompt("Name:"); if(n) { const final = "🔹 " + n; customCats[addType].push(final); localStorage.setItem('x_custom_cats', JSON.stringify(customCats)); renderCats(); document.getElementById('cat').value = final; } } document.getElementById('petrol-fields').style.display = (v.includes('Petrol') && addType === 'expense') ? 'block' : 'none'; }
         function saveData() { localStorage.setItem('x_txns', JSON.stringify(txns)); refreshView(); }
-        function tab(v, el) { 
-            if(navigator.vibrate) navigator.vibrate(5);
-            document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
-            document.getElementById('view-'+v).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
-            el.classList.add('active');
-            if(v === 'add') setAddType('expense');
-        }
+        function tab(v, el) { document.querySelectorAll('.view').forEach(x => x.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active')); el.classList.add('active'); }
         function changeMonth(d) { displayDate.setMonth(displayDate.getMonth()+d); refreshView(); }
         function togglePrivacy() { privacyMode = !privacyMode; document.getElementById('balance').classList.toggle('blur-mode'); }
-        function updateBudget(data) {
-            const spent = data.filter(t => t.type==='expense').reduce((a,b)=>a+b.amt,0);
-            const pct = Math.min((spent/user.budget)*100, 100);
-            document.getElementById('spent-display').innerText = `₹${spent.toLocaleString()} Spent`;
-            document.getElementById('budget-tgt').innerText = (user.budget/1000) + 'k';
-            document.getElementById('budget-fill').style.width = pct+'%';
-            document.getElementById('budget-line').style.width = pct+'%';
-            
-            let c = 'var(--primary)';
-            if(pct>75) c = 'var(--warn)';
-            if(pct>100) c = 'var(--danger)';
-            document.getElementById('budget-line').style.background = c;
-            document.getElementById('budget-fill').style.background = `linear-gradient(90deg, ${c}, transparent)`;
-        }
-        function editBudget(e) { 
-            const n = prompt("Monthly Budget Target:", user.budget); 
-            if(n && !isNaN(n)) { user.budget = n; localStorage.setItem('x_user', JSON.stringify(user)); refreshView(); } 
-        }
-        function updateBal() {
-            const bal = getCurrentBalance();
-            document.getElementById('balance').innerText = `₹${bal.toLocaleString()}`;
-        }
-        
+        function updateBudget(data) { const spent = data.filter(t => t.type==='expense').reduce((a,b)=>a+b.amt,0); const pct = Math.min((spent/user.budget)*100, 100); document.getElementById('spent-display').innerText = `₹${spent.toLocaleString()} Spent`; document.getElementById('budget-fill').style.width = pct+'%'; document.getElementById('budget-line').style.width = pct+'%'; }
+        function editBudget() { const n = prompt("Target:", user.budget); if(n && !isNaN(n)) { user.budget = n; localStorage.setItem('x_user', JSON.stringify(user)); refreshView(); } }
+        function getCurrentBalance() { return txns.reduce((acc, t) => t.type === 'income' ? acc + t.amt : acc - t.amt, 0); }
+        function updateBal() { document.getElementById('balance').innerText = `₹${getCurrentBalance().toLocaleString()}`; }
         function openProfile() { document.getElementById('view-profile').style.display='block'; }
-        function closeProfile() { 
-            const name = document.getElementById('user-name-in').value;
-            if(name) user.name = name; 
-            localStorage.setItem('x_user', JSON.stringify(user));
-            updateGreeting();
-            document.getElementById('view-profile').style.display='none'; 
-        }
-        function loadProfile() {
-            document.getElementById('user-name-in').value = user.name;
-            if(user.img) {
-                document.getElementById('header-avatar').src = user.img;
-                document.getElementById('header-avatar').style.display='block';
-                document.getElementById('header-ph').style.display='none';
-            }
-        }
-        function uploadImg() {
-            const f = document.getElementById('file-in').files[0];
-            const r = new FileReader();
-            r.onload = e => {
-                user.img = e.target.result;
-                loadProfile();
-            };
-            if(f) r.readAsDataURL(f);
-        }
-        function setTheme(p, a) {
-            user.themeP = p; user.themeA = a;
-            applyTheme(p,a);
-        }
-        function applyTheme(p,a) {
-            document.documentElement.style.setProperty('--primary', p);
-            document.documentElement.style.setProperty('--accent', a);
-            document.querySelector('.aura.one').style.background = p;
-            document.querySelector('.aura.two').style.background = a;
-            // Removed the line that was forcing the background color on .card
-        }
-        function resetApp() {
-            if(confirm("DANGER: Wipe all data?")) { localStorage.clear(); location.reload(); }
-        }
-        function renderPetrolList() {
-            const valid = petrol.filter(p => p.mileage > 0);
-            if(valid.length) {
-                const avg = (valid.reduce((a,b)=>a+parseFloat(b.mileage),0)/valid.length).toFixed(1);
-                document.getElementById('avg-mileage').innerText = `${avg}`;
-            }
-            document.getElementById('odo-display').innerText = `Odo: ${lastOdo}`;
-            document.getElementById('petrol-list').innerHTML = petrol.slice(0,10).map(p => `
-                <div class="txn">
-                    <div>
-                        <div style="font-weight:600">${new Date(p.date).toLocaleDateString()}</div>
-                        <div style="font-size:12px; color:var(--sub)">${p.litres}L • ${p.odo} km</div>
-                    </div>
-                    <div style="text-align:right">
-                        <div>₹${p.amt}</div>
-                        <div style="font-size:12px; color:${p.mileage>40?'var(--success)':'var(--warn)'}">${p.mileage} km/L</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        function filterList() {
-            const q = document.getElementById('search-box').value.toLowerCase();
-            const f = txns.filter(t => (t.cat && t.cat.toLowerCase().includes(q)) || (t.person && t.person.toLowerCase().includes(q)));
-            renderList(f);
-        }
-        function renderNumpad() { 
-            const pad = document.getElementById('numpad'); 
-            [1,2,3,4,5,6,7,8,9,'C',0,'<'].forEach(n => { 
-                let b = document.createElement('div'); 
-                b.className = 'num-btn'; 
-                b.innerText = n==='<'?'⌫':n; 
-                b.onclick = () => handlePin(n); 
-                pad.appendChild(b); 
-            }); 
-        }
-        function updateGreeting() {
-            const hr = new Date().getHours();
-            let t = "Good Morning";
-            if(hr>=12) t="Good Afternoon";
-            if(hr>=17) t="Good Evening";
-            document.getElementById('greet-time').innerText = t;
-            document.getElementById('user-display').innerText = user.name;
-        }
+        function closeProfile() { const name = document.getElementById('user-name-in').value; if(name) user.name = name; localStorage.setItem('x_user', JSON.stringify(user)); updateGreeting(); document.getElementById('view-profile').style.display='none'; }
+        function loadProfile() { document.getElementById('user-name-in').value = user.name; if(user.img) { document.getElementById('header-avatar').src = user.img; document.getElementById('header-avatar').style.display='block'; document.getElementById('header-ph').style.display='none'; } }
+        function uploadImg() { const f = document.getElementById('file-in').files[0]; const r = new FileReader(); r.onload = e => { user.img = e.target.result; loadProfile(); }; if(f) r.readAsDataURL(f); }
+        function applyTheme(p,a) { document.documentElement.style.setProperty('--primary', p); document.documentElement.style.setProperty('--accent', a); }
+        function resetApp() { if(confirm("Wipe data?")) { localStorage.clear(); location.reload(); } }
+        function renderPetrolList() { const valid = petrol.filter(p => p.mileage > 0); if(valid.length) { const avg = (valid.reduce((a,b)=>a+parseFloat(b.mileage),0)/valid.length).toFixed(1); document.getElementById('avg-mileage').innerText = `${avg}`; } document.getElementById('odo-display').innerText = `Odo: ${lastOdo}`; document.getElementById('petrol-list').innerHTML = petrol.slice(0,10).map(p => `<div class="txn"><div><div style="font-weight:600">${new Date(p.date).toLocaleDateString()}</div><div style="font-size:12px; color:var(--sub)">${p.litres}L • ${p.odo} km</div></div><div style="text-align:right"><div>₹${p.amt}</div><div style="font-size:12px; color:${p.mileage>40?'var(--success)':'var(--warn)'}">${p.mileage} km/L</div></div></div>`).join(''); }
+        function updateGreeting() { const hr = new Date().getHours(); let t = "Good Morning"; if(hr>=12) t="Good Afternoon"; if(hr>=17) t="Good Evening"; document.getElementById('greet-time').innerText = t; document.getElementById('user-display').innerText = user.name; }
+        function renderNumpad() { const pad = document.getElementById('numpad'); [1,2,3,4,5,6,7,8,9,'C',0,'<'].forEach(n => { let b = document.createElement('div'); b.className = 'num-btn'; b.innerText = n==='<'?'⌫':n; b.onclick = () => handlePin(n); pad.appendChild(b); }); }
+        function editBalance() { const c = getCurrentBalance(); const r = prompt(`Bank Balance:`, c); if(r && !isNaN(r)) { const diff = parseFloat(r) - c; txns.unshift({ id: Date.now(), amt: Math.abs(diff), type: diff > 0 ? 'income' : 'expense', cat: '⚙️ Correction', date: new Date().toISOString() }); saveData(); } }
+        function deleteTxn(id) { if(confirm("Delete?")) { txns = txns.filter(t => t.id !== id); saveData(); } }
+        function filterList() { const q = document.getElementById('search-box').value.toLowerCase(); renderList(txns.filter(t => (t.cat && t.cat.toLowerCase().includes(q)))); }
 
         init();
     </script>
