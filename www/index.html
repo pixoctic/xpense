@@ -7,7 +7,7 @@
     <title>Xpense Ultimate v4</title>
     
     <style>
-        /* --- THEME VARS --- */
+        /* [SECTION: CSS THEME VARIABLES] */
         :root { 
             --bg: #000000;
             --glass: rgba(22, 22, 24, 0.95);
@@ -19,6 +19,7 @@
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
+        /* [SECTION: GLOBAL BODY STYLES] */
         body { 
             background: var(--bg);
             color: var(--text); font-family: 'Inter', -apple-system, sans-serif; 
@@ -27,13 +28,13 @@
             user-select: none;
         }
 
-        /* --- FX --- */
+        /* [SECTION: BACKGROUND ANIMATIONS] */
         .aura { position: fixed; width: 300px; height: 300px; filter: blur(90px); opacity: 0.25; z-index: -1; animation: float 10s infinite alternate; }
         .aura.one { top: -50px; left: -50px; background: var(--primary); }
         .aura.two { bottom: -50px; right: -50px; background: var(--accent); animation-delay: -5s; }
         @keyframes float { 0% { transform: translate(0,0); } 100% { transform: translate(40px, 40px); } }
 
-        /* --- LOCK SCREEN --- */
+        /* [SECTION: LOCK SCREEN UI STYLES] */
         #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .pin-dots { color: var(--primary); font-size: 30px; letter-spacing: 12px; margin-bottom: 20px; min-height: 40px; }
         .lock-msg { color: var(--danger); font-size: 14px; margin-bottom: 20px; height: 20px; font-weight: bold; }
@@ -42,7 +43,7 @@
         .num-btn:active { background: var(--primary); transform: scale(0.9); }
         .num-btn.disabled { opacity: 0.3; pointer-events: none; }
 
-        /* --- HEADER --- */
+        /* [SECTION: APP HEADER STYLES] */
         header { padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
         .logo-text { 
             font-size: 24px; font-weight: 900; 
@@ -55,23 +56,18 @@
         .profile-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; background: #222; position: relative; }
         .profile-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- DASHBOARD & CLASSY CARD --- */
+        /* [SECTION: DASHBOARD CARD & SPOTLIGHT STYLES] */
         .dashboard { padding: 10px 24px; }
-        
         .card { 
             position: relative;
-            background: #111; /* Deep Matte Base */
+            background: #111; 
             border-radius: 26px;
             padding: 30px 25px;
             text-align: center;
             overflow: hidden;
-            /* Subtle, premium border */
             border: 1px solid rgba(255,255,255,0.08); 
-            /* Deep drop shadow for depth */
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); 
         }
-
-        /* The Ambient Light Spotlight */
         .card::before {
             content: '';
             position: absolute;
@@ -79,18 +75,14 @@
             right: -50%;
             width: 100%;
             height: 100%;
-            /* Soft radial glow using the theme color */
             background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-            opacity: 0.2; /* Subtle opacity */
+            opacity: 0.2; 
             filter: blur(40px);
             pointer-events: none;
             z-index: 0;
             transition: background 0.5s ease;
         }
-
-        /* Ensure content sits above the glow */
         .bal-val, .budget-wrap, .card div { position: relative; z-index: 2; }
-
         .bal-val { 
             font-size: 48px; 
             font-weight: 600; 
@@ -101,7 +93,6 @@
             justify-content: center; 
             color: #fff; 
         }
-        
         .edit-pen { 
             font-size: 16px; 
             width: 28px; height: 28px; 
@@ -116,43 +107,42 @@
         }
         .edit-pen:active { transform: scale(0.9); opacity: 1; background: var(--primary); }
         .blur-mode { filter: blur(12px); }
-        
         .budget-wrap { margin-top: 20px; background: rgba(0,0,0,0.3); border-radius: 10px; height: 36px; position: relative; overflow: hidden; display:flex; align-items:center; padding: 0 12px; border: 1px solid rgba(255,255,255,0.05); }
         .budget-fill { position: absolute; top:0; left:0; height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); opacity: 0.25; width: 0%; transition: 1s ease; }
         .budget-text { position: relative; z-index: 2; font-size: 11px; color: #eee; width: 100%; display: flex; justify-content: space-between; font-weight: 600; align-items: center; letter-spacing: 0.3px; }
         .budget-line { position: absolute; bottom: 0; left: 0; height: 2px; background: var(--primary); width: 0%; transition: 1s ease; z-index: 3; box-shadow: 0 0 10px var(--primary); }
 
-        /* --- NAV & VIEWS --- */
+        /* [SECTION: VIEW NAVIGATION STYLES] */
         .month-nav { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 5px 0 15px; }
         .month-btn { background: none; border: none; color: var(--sub); font-size: 20px; cursor: pointer; padding: 10px; }
         .view-container { flex: 1; overflow-y: auto; padding-bottom: 100px; scroll-behavior: smooth; }
         .view { padding: 0 24px; display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
 
-        /* --- INPUTS --- */
+        /* [SECTION: INPUT BOX STYLES] */
         .input-box { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 16px; border-radius: 14px; font-size: 16px; margin-bottom: 12px; outline: none; transition: 0.3s; }
         .input-box:focus { border-color: var(--primary); background: #161616; }
         .action-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; font-size: 16px; font-weight: 700; margin-top: 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-        /* --- LISTS --- */
+        /* [SECTION: TRANSACTION LIST STYLES] */
         .txn { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); user-select: none; transition: background 0.2s; position: relative; }
         .txn.settled { opacity: 0.5; }
         .inc { color: var(--success); } .exp { color: var(--text); } .lent { color: var(--warn); }
         .tag-pill { font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; font-weight: bold; border: 1px solid; }
         
-        /* --- DONUT CHART --- */
+        /* [SECTION: CHART STYLES] */
         .chart-wrap { position: relative; width: 200px; height: 200px; margin: 20px auto; border-radius: 50%; background: conic-gradient(rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 100%); }
         .chart-hole { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; height: 140px; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: var(--sub); }
         .color-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
 
-        /* --- BOTTOM NAV --- */
+        /* [SECTION: BOTTOM NAVIGATION BAR STYLES] */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--glass-nav); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 12px 0 calc(15px + env(safe-area-inset-bottom)); z-index: 100; }
         .nav-item { color: #666; font-size: 10px; text-align: center; width: 60px; }
         .nav-item.active { color: var(--primary); }
         .nav-icon { font-size: 22px; margin-bottom: 2px; }
 
-        /* --- MODAL --- */
+        /* [SECTION: PROFILE MODAL STYLES] */
         #view-profile { display: none; position: fixed; inset: 0; background: #000; z-index: 2000; padding: 20px; overflow-y: auto; }
         .theme-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .theme-dot.selected { border-color: white; }
@@ -315,7 +305,7 @@
     </div>
 
     <script>
-        // --- CONFIG & STATE ---
+        // --- LOGIC: CONFIG & INITIAL STATE ---
         let PIN = localStorage.getItem('x_pin');
         let inputPin = "";
         let failedAttempts = 0;
@@ -324,7 +314,7 @@
         let petrol = JSON.parse(localStorage.getItem('x_petrol')) || [];
         let user = JSON.parse(localStorage.getItem('x_user')) || { name: 'User', img: null, budget: 20000, themeP: '#3b82f6', themeA: '#8b5cf6' };
         let customCats = JSON.parse(localStorage.getItem('x_custom_cats')) || { expense: [], income: [] };
-        let lastOdo = localStorage.getItem('x_odo') || 0;
+        let lastOdo = parseFloat(localStorage.getItem('x_odo')) || 0;
 
         let displayDate = new Date();
         let addType = 'expense';
@@ -344,7 +334,7 @@
             loadProfile();
         }
 
-        // --- SECURITY ---
+        // --- LOGIC: PIN SECURITY SYSTEM ---
         function setupNewPin() {
             document.getElementById('lock-title').innerText = "Welcome! Set PIN";
             document.getElementById('lock-msg').innerText = "Create a 6-digit PIN";
@@ -405,7 +395,7 @@
             }
         }
 
-        // --- CORE UI ---
+        // --- LOGIC: UI UPDATES & RENDERING ---
         function refreshView() {
             const m = displayDate.toLocaleString('default', { month: 'long', year: 'numeric' });
             document.getElementById('month-label').innerText = m;
@@ -457,6 +447,7 @@
             }).join('');
         }
 
+        // --- LOGIC: FINANCE MATH & DEBT SYSTEM ---
         function getCurrentBalance() {
             return txns.reduce((acc, t) => {
                 if(t.type === 'income') return acc + t.amt;
@@ -509,6 +500,7 @@
             }
         }
 
+        // --- LOGIC: DATA STORAGE & BACKUP ---
         function downloadJSON() {
             const data = { txns, petrol, user, customCats, lastOdo };
             const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
@@ -540,6 +532,7 @@
             r.readAsText(file);
         }
 
+        // --- LOGIC: STATS CHART RENDERING ---
         function renderStats(data) {
             const exps = data.filter(t => t.type === 'expense');
             const total = exps.reduce((a,b) => a + b.amt, 0);
@@ -576,6 +569,7 @@
             document.getElementById('stats-legend').innerHTML = htmlLegend;
         }
 
+        // --- LOGIC: CATEGORIES & TRANSACTION INPUTS ---
         function setAddType(t) {
             addType = t;
             document.querySelectorAll('#view-add .action-btn').forEach(b => b.style.opacity = '0.5');
@@ -611,6 +605,7 @@
             document.getElementById('petrol-fields').style.display = (v.includes('Petrol') && addType === 'expense') ? 'block' : 'none';
         }
 
+        // --- [SECTION: RECTIFIED MILEAGE CALCULATION] ---
         function addTxn() {
             const amt = parseFloat(document.getElementById('amt').value);
             if(!amt) return;
@@ -632,17 +627,31 @@
                 if(txn.cat.includes('Petrol') && addType === 'expense') {
                     const price = parseFloat(document.getElementById('p-price').value);
                     const odo = parseFloat(document.getElementById('p-odo').value);
-                    if(odo > lastOdo) {
+                    
+                    /* RECTIFIED MILEAGE BUG: 
+                       Check if this is the first entry (lastOdo == 0).
+                       If not first, calculate based on distance traveled.
+                    */
+                    if(lastOdo > 0 && odo > lastOdo) {
                         const litres = amt / price;
                         const dist = odo - lastOdo;
                         const mil = dist / litres;
                         
-                        petrol.unshift({ date: txn.date, amt, litres: litres.toFixed(1), mileage: mil.toFixed(1), odo });
-                        localStorage.setItem('x_petrol', JSON.stringify(petrol));
-                        localStorage.setItem('x_odo', odo);
-                        lastOdo = odo;
-                        alert(`Mileage: ${mil.toFixed(1)} km/L`);
+                        // Prevent unrealistic spikes (Safety check)
+                        if (mil < 100) {
+                            petrol.unshift({ date: txn.date, amt, litres: litres.toFixed(1), mileage: mil.toFixed(1), odo });
+                            alert(`Mileage: ${mil.toFixed(1)} km/L`);
+                        } else {
+                            petrol.unshift({ date: txn.date, amt, litres: litres.toFixed(1), mileage: "Check Odo", odo });
+                        }
+                    } else {
+                        // Record first odometer reading
+                        petrol.unshift({ date: txn.date, amt, litres: (amt/price).toFixed(1), mileage: "Initial", odo });
+                        alert("Initial Odo recorded. Mileage will calculate from your next fill-up.");
                     }
+                    localStorage.setItem('x_petrol', JSON.stringify(petrol));
+                    localStorage.setItem('x_odo', odo);
+                    lastOdo = odo;
                 }
             }
 
@@ -654,6 +663,7 @@
             tab('home', document.querySelectorAll('.nav-item')[0]);
         }
 
+        // --- [SECTION: UTILITY & TAB CONTROL LOGIC] ---
         function deleteTxn(id) {
             if(confirm("Delete this transaction permanently?")) {
                 txns = txns.filter(t => t.id !== id);
@@ -730,15 +740,14 @@
             document.documentElement.style.setProperty('--accent', a);
             document.querySelector('.aura.one').style.background = p;
             document.querySelector('.aura.two').style.background = a;
-            // Removed the line that was forcing the background color on .card
         }
         function resetApp() {
             if(confirm("DANGER: Wipe all data?")) { localStorage.clear(); location.reload(); }
         }
         function renderPetrolList() {
-            const valid = petrol.filter(p => p.mileage > 0);
+            const valid = petrol.filter(p => p.mileage !== 0);
             if(valid.length) {
-                const avg = (valid.reduce((a,b)=>a+parseFloat(b.mileage),0)/valid.length).toFixed(1);
+                const avg = (valid.filter(x => !isNaN(parseFloat(x.mileage))).reduce((a,b)=>a+parseFloat(b.mileage),0)/valid.length).toFixed(1);
                 document.getElementById('avg-mileage').innerText = `${avg}`;
             }
             document.getElementById('odo-display').innerText = `Odo: ${lastOdo}`;
@@ -750,7 +759,7 @@
                     </div>
                     <div style="text-align:right">
                         <div>₹${p.amt}</div>
-                        <div style="font-size:12px; color:${p.mileage>40?'var(--success)':'var(--warn)'}">${p.mileage} km/L</div>
+                        <div style="font-size:12px; color:${parseFloat(p.mileage)>40?'var(--success)':'var(--warn)'}">${p.mileage} km/L</div>
                     </div>
                 </div>
             `).join('');
