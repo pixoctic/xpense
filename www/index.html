@@ -49,36 +49,78 @@
             background: linear-gradient(135deg, var(--primary), var(--accent)); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
             margin: 0; 
-            text-shadow: 0 0 30px var(--primary); /* Glowing Logo */
+            text-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
         }
         .greeting-sub { font-size: 13px; color: var(--sub); margin-top: 4px; font-weight: 500; }
         .profile-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; background: #222; position: relative; }
         .profile-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- DASHBOARD --- */
+        /* --- DASHBOARD & CLASSY CARD --- */
         .dashboard { padding: 10px 24px; }
-        /* v4 CARD DESIGN: Dynamic Background & Inner Glow */
-        .card { 
-            /* Background is set via JS to include Theme Gradient */
-            background: var(--glass); 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            border-top: 1px solid var(--primary); /* Top highlight */
-            border-radius: 24px; padding: 25px; 
-            text-align: center; position: relative; overflow: hidden; 
-            box-shadow: 
-                0 20px 50px -20px #000, 
-                inset 0 -40px 100px -30px var(--primary); /* Inner Color Glow */
-            transition: 0.3s ease;
-        }
-        .bal-val { font-size: 42px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 2; position: relative; }
-        .edit-pen { font-size: 16px; opacity: 0.5; cursor: pointer; margin-left: 10px; color: var(--primary); }
-        .blur-mode { filter: blur(10px); }
         
-        .budget-wrap { margin-top: 20px; background: rgba(0,0,0,0.3); border-radius: 8px; height: 32px; position: relative; overflow: hidden; display:flex; align-items:center; padding: 0 10px; z-index: 2; border: 1px solid rgba(255,255,255,0.05); }
-        .budget-fill { position: absolute; top:0; left:0; height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); opacity: 0.3; width: 0%; transition: 1s ease; }
-        .budget-text { position: relative; z-index: 2; font-size: 11px; color: #fff; width: 100%; display: flex; justify-content: space-between; font-weight: 600; align-items: center; }
-        .budget-line { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--primary); width: 0%; transition: 1s ease; z-index: 3; }
+        .card { 
+            position: relative;
+            background: #111; /* Deep Matte Base */
+            border-radius: 26px;
+            padding: 30px 25px;
+            text-align: center;
+            overflow: hidden;
+            /* Subtle, premium border */
+            border: 1px solid rgba(255,255,255,0.08); 
+            /* Deep drop shadow for depth */
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); 
+        }
+
+        /* The Ambient Light Spotlight */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            /* Soft radial glow using the theme color */
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.2; /* Subtle opacity */
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 0.5s ease;
+        }
+
+        /* Ensure content sits above the glow */
+        .bal-val, .budget-wrap, .card div { position: relative; z-index: 2; }
+
+        .bal-val { 
+            font-size: 48px; 
+            font-weight: 600; 
+            letter-spacing: -1.5px; 
+            margin: 15px 0 25px 0;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #fff; 
+        }
+        
+        .edit-pen { 
+            font-size: 16px; 
+            width: 28px; height: 28px; 
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            margin-left: 12px; 
+            opacity: 0.6; 
+            cursor: pointer; 
+            color: #fff;
+            transition: 0.2s;
+        }
+        .edit-pen:active { transform: scale(0.9); opacity: 1; background: var(--primary); }
+        .blur-mode { filter: blur(12px); }
+        
+        .budget-wrap { margin-top: 20px; background: rgba(0,0,0,0.3); border-radius: 10px; height: 36px; position: relative; overflow: hidden; display:flex; align-items:center; padding: 0 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .budget-fill { position: absolute; top:0; left:0; height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); opacity: 0.25; width: 0%; transition: 1s ease; }
+        .budget-text { position: relative; z-index: 2; font-size: 11px; color: #eee; width: 100%; display: flex; justify-content: space-between; font-weight: 600; align-items: center; letter-spacing: 0.3px; }
+        .budget-line { position: absolute; bottom: 0; left: 0; height: 2px; background: var(--primary); width: 0%; transition: 1s ease; z-index: 3; box-shadow: 0 0 10px var(--primary); }
 
         /* --- NAV & VIEWS --- */
         .month-nav { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 5px 0 15px; }
@@ -688,11 +730,7 @@
             document.documentElement.style.setProperty('--accent', a);
             document.querySelector('.aura.one').style.background = p;
             document.querySelector('.aura.two').style.background = a;
-            
-            // Apply gradient background to card via JS to handle Hex opacity
-            // We append '25' to hex which is roughly 15% opacity
-            const cardBg = `linear-gradient(135deg, rgba(22, 22, 24, 0.95) 0%, ${p}30 100%)`; 
-            document.querySelector('.card').style.background = cardBg;
+            // Removed the line that was forcing the background color on .card
         }
         function resetApp() {
             if(confirm("DANGER: Wipe all data?")) { localStorage.clear(); location.reload(); }
