@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>Xpense Ultimate v3</title>
+    <title>Xpense Ultimate v4</title>
     
     <style>
         /* --- THEME VARS --- */
         :root { 
             --bg: #000000;
-            --glass: rgba(22, 22, 24, 0.9);
+            --glass: rgba(22, 22, 24, 0.95);
             --glass-nav: rgba(10, 10, 10, 0.95);
             --primary: #3b82f6; 
             --accent: #8b5cf6;
@@ -44,13 +44,12 @@
 
         /* --- HEADER --- */
         header { padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
-        /* UPDATED LOGO: Removes dot, adds theme gradient */
         .logo-text { 
             font-size: 24px; font-weight: 900; 
             background: linear-gradient(135deg, var(--primary), var(--accent)); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
             margin: 0; 
-            text-shadow: 0 0 30px var(--primary);
+            text-shadow: 0 0 30px var(--primary); /* Glowing Logo */
         }
         .greeting-sub { font-size: 13px; color: var(--sub); margin-top: 4px; font-weight: 500; }
         .profile-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; background: #222; position: relative; }
@@ -58,20 +57,25 @@
 
         /* --- DASHBOARD --- */
         .dashboard { padding: 10px 24px; }
-        /* UPDATED CARD: Uses Theme Color for Border & Glow */
+        /* v4 CARD DESIGN: Dynamic Background & Inner Glow */
         .card { 
-            background: var(--glass); backdrop-filter: blur(20px); 
-            border: 1px solid var(--primary); /* Theme Border */
+            /* Background is set via JS to include Theme Gradient */
+            background: var(--glass); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-top: 1px solid var(--primary); /* Top highlight */
             border-radius: 24px; padding: 25px; 
             text-align: center; position: relative; overflow: hidden; 
-            box-shadow: 0 10px 40px -10px var(--primary); /* Theme Glow */
-            transition: 0.5s ease;
+            box-shadow: 
+                0 20px 50px -20px #000, 
+                inset 0 -40px 100px -30px var(--primary); /* Inner Color Glow */
+            transition: 0.3s ease;
         }
-        .bal-val { font-size: 42px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-shadow: 0 0 20px rgba(255,255,255, 0.1); }
-        .blur-mode { filter: blur(10px); }
+        .bal-val { font-size: 42px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 2; position: relative; }
         .edit-pen { font-size: 16px; opacity: 0.5; cursor: pointer; margin-left: 10px; color: var(--primary); }
+        .blur-mode { filter: blur(10px); }
         
-        .budget-wrap { margin-top: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; height: 32px; position: relative; overflow: hidden; display:flex; align-items:center; padding: 0 10px; }
+        .budget-wrap { margin-top: 20px; background: rgba(0,0,0,0.3); border-radius: 8px; height: 32px; position: relative; overflow: hidden; display:flex; align-items:center; padding: 0 10px; z-index: 2; border: 1px solid rgba(255,255,255,0.05); }
         .budget-fill { position: absolute; top:0; left:0; height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); opacity: 0.3; width: 0%; transition: 1s ease; }
         .budget-text { position: relative; z-index: 2; font-size: 11px; color: #fff; width: 100%; display: flex; justify-content: space-between; font-weight: 600; align-items: center; }
         .budget-line { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--primary); width: 0%; transition: 1s ease; z-index: 3; }
@@ -141,12 +145,14 @@
 
     <div class="dashboard">
         <div class="card">
-            <div style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.5" onclick="togglePrivacy()">👁️</div>
-            <div style="font-size:11px; color:var(--sub); text-transform:uppercase; letter-spacing:1px">Net Balance</div>
+            <div style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.5; z-index:5" onclick="togglePrivacy()">👁️</div>
+            <div style="font-size:11px; color:var(--sub); text-transform:uppercase; letter-spacing:1px; position:relative; z-index:2">Net Balance</div>
+            
             <div class="bal-val">
                 <span id="balance">₹0</span> 
                 <span class="edit-pen" onclick="editBalance()">✎</span>
             </div>
+            
             <div class="budget-wrap">
                 <div class="budget-fill" id="budget-fill"></div>
                 <div class="budget-line" id="budget-line"></div>
@@ -272,19 +278,16 @@
         let inputPin = "";
         let failedAttempts = 0;
         
-        // Data Stores
         let txns = JSON.parse(localStorage.getItem('x_txns')) || [];
         let petrol = JSON.parse(localStorage.getItem('x_petrol')) || [];
         let user = JSON.parse(localStorage.getItem('x_user')) || { name: 'User', img: null, budget: 20000, themeP: '#3b82f6', themeA: '#8b5cf6' };
         let customCats = JSON.parse(localStorage.getItem('x_custom_cats')) || { expense: [], income: [] };
         let lastOdo = localStorage.getItem('x_odo') || 0;
 
-        // Runtime State
         let displayDate = new Date();
         let addType = 'expense';
         let privacyMode = false;
         
-        // Cats
         const defExp = ['🍔 Food', '🛍️ Shopping', '🎬 Fun', '⛽ Petrol', '🚌 Travel', '🏠 Rent', '⚡ Bills', '🏥 Health'];
         const defInc = ['💰 Salary', '💵 Allowance', '🎁 Bonus', '🪙 Other'];
 
@@ -412,7 +415,6 @@
             }).join('');
         }
 
-        // --- NEW LOGIC: Edit Balance & Settle ---
         function getCurrentBalance() {
             return txns.reduce((acc, t) => {
                 if(t.type === 'income') return acc + t.amt;
@@ -686,6 +688,11 @@
             document.documentElement.style.setProperty('--accent', a);
             document.querySelector('.aura.one').style.background = p;
             document.querySelector('.aura.two').style.background = a;
+            
+            // Apply gradient background to card via JS to handle Hex opacity
+            // We append '25' to hex which is roughly 15% opacity
+            const cardBg = `linear-gradient(135deg, rgba(22, 22, 24, 0.95) 0%, ${p}30 100%)`; 
+            document.querySelector('.card').style.background = cardBg;
         }
         function resetApp() {
             if(confirm("DANGER: Wipe all data?")) { localStorage.clear(); location.reload(); }
